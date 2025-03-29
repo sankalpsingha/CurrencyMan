@@ -4,7 +4,7 @@
   z-index: 9999;
   background-color: #333333;
   color: #FFFFFF;
-  padding: 8px 12px;
+  padding: 8px 30px 8px 12px; /* Increased right padding to accommodate the close button */
   border-radius: 4px;
   font-size: 14px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);

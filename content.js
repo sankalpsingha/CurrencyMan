@@ -214,16 +214,30 @@ function showConversionPopup(fromCurrency, amount, selection) {
   popup.style.zIndex = '9999';
   popup.style.fontSize = '14px';
   
-  // Add close button
-  const closeButton = document.createElement('span');
-  closeButton.textContent = '×';
-  closeButton.style.position = 'absolute';
-  closeButton.style.top = '2px';
-  closeButton.style.right = '5px';
-  closeButton.style.cursor = 'pointer';
-  closeButton.style.fontSize = '16px';
-  closeButton.addEventListener('click', () => popup.remove());
-  popup.appendChild(closeButton);
+    // Add close button
+    const closeButton = document.createElement('span');
+    closeButton.textContent = '×';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '-3px';
+    closeButton.style.right = '0px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.fontSize = '18px';
+    closeButton.style.fontWeight = 'bold';
+    closeButton.style.width = '10px';
+    closeButton.style.height = '10px';
+    closeButton.style.lineHeight = '18px';
+    closeButton.style.textAlign = 'center';
+    closeButton.style.borderRadius = '50%';
+    // closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    closeButton.style.padding = '2px';
+    closeButton.addEventListener('click', () => popup.remove());
+    closeButton.addEventListener('mouseover', () => {
+      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+    });
+    closeButton.addEventListener('mouseout', () => {
+      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    });
+    popup.appendChild(closeButton);
   
   document.body.appendChild(popup);
   
