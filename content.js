@@ -208,7 +208,7 @@ function showConversionPopup(fromCurrency, amount, selection) {
   popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
   popup.style.backgroundColor = '#333333';
   popup.style.color = '#FFFFFF';
-  popup.style.padding = '8px 12px';
+  popup.style.padding = '5px 15px';
   popup.style.borderRadius = '4px';
   popup.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
   popup.style.zIndex = '9999';
