@@ -2,12 +2,13 @@
   "name": "currencyman",
   "version": "1.0.0",
   "description": "CurrencyMan is a Chrome extension that allows you to convert currency values on webpages to your preferred local currency. Simply select any text containing a currency value, and a popup will show the converted amount.",
-  "main": "background.js",
+  "main": "src/background/background.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --config webpack.config.js",
     "clean": "rimraf dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/unit/regex-unit-tests.js",
+    "test:watch": "mocha --watch test/unit/regex-unit-tests.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-minimizer-webpack-plugin": "^7.0.2",
+    "mocha": "^10.2.0",
     "rimraf": "^6.0.1",
     "terser-webpack-plugin": "^5.3.14",
     "webpack": "^5.98.0",

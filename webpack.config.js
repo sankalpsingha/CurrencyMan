@@ -8,9 +8,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   mode: 'production',
   entry: {
-    content: './content.js',
-    background: './background.js',
-    popup: './popup.js'
+    content: './src/content/content.js',
+    background: './src/background/background.js',
+    popup: './src/popup/popup.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -39,18 +39,18 @@ module.exports = {
           to: '.' 
         },
         { 
-          from: 'popup.html', 
+          from: 'src/popup/popup.html', 
           to: '.' 
         },
         { 
-          from: 'styles.css', 
-          to: '.',
+          from: 'src/styles/styles.css', 
+          to: 'styles.css',
           transform(content) {
             return content.toString().replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').replace(/\s+/g, ' ').trim();
           },
         },
         { 
-          from: 'icons', 
+          from: 'assets/icons', 
           to: 'icons',
           globOptions: {
             ignore: ['**/README.txt', '**/.DS_Store'],

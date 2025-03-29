@@ -58,6 +58,32 @@ To submit the extension to the Chrome Web Store:
 5. Fill in the required information (description, screenshots, etc.)
 6. Submit for review
 
+### Addressing Permission Warnings
+
+During submission, you may receive warnings about permissions:
+
+#### Broad Host Permissions Warning
+
+You might see a warning about "Broad Host Permissions" because:
+
+1. The content script uses `"matches": ["<all_urls>"]` - This is necessary because the extension needs to work on any webpage where a user might select currency text.
+2. The extension requires access to the currency API via `"host_permissions": ["https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/*"]`.
+
+**How to address this in your submission:**
+
+When you receive this warning, you can explain in the "Additional Information" section:
+
+> "CurrencyMan requires content script access to all URLs because it needs to detect and convert currency values on any webpage the user visits. The host permission to cdn.jsdelivr.net is specifically for accessing the currency exchange rate API. The extension does not collect or transmit any user data beyond what's needed for currency conversion functionality."
+
+#### Justification for Permissions
+
+In your submission, clearly explain why each permission is needed:
+
+- `"storage"`: To save user preferences and cache exchange rates
+- `"activeTab"`: To access the current tab for currency conversion
+- `"host_permissions"`: To fetch real-time exchange rates from the currency API
+- Content script on all URLs: To enable currency conversion on any webpage
+
 ## Updating the Extension
 
 When you need to update the extension:

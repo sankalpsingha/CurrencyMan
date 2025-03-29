@@ -27,6 +27,9 @@
       "css": ["styles.css"]
     }
   ],
+  "externally_connectable": {
+    "matches": ["https://cdn.jsdelivr.net/*"]
+  },
   "background": {
     "service_worker": "background.js"
   }
