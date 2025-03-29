@@ -295,19 +295,108 @@
       </div>
     </div>
 
+    <style>
+      /* Additional styles for the How to Use section */
+      .steps-container {
+        margin-top: 10px;
+      }
+
+      .step {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+
+      .step-number {
+        background-color: #4285f4;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 10px;
+        flex-shrink: 0;
+      }
+
+      .step-content {
+        flex: 1;
+      }
+
+      .format-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .format-example {
+        background-color: #f0f7ff;
+        border: 1px solid #d0e3ff;
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-family: monospace;
+        font-size: 13px;
+        color: #0066cc;
+      }
+
+      .icon-text {
+        display: flex;
+        align-items: center;
+      }
+
+      .icon {
+        margin-right: 8px;
+        color: #4285f4;
+        font-size: 16px;
+      }
+    </style>
+
     <div class="section">
       <h2 class="section-title">How to Use</h2>
-      <p>
-        Select any text containing a currency value on a webpage, and a
-        conversion popup will appear showing the value in your target currency.
-      </p>
-      <p>Examples of supported formats:</p>
-      <ul>
-        <li>$10.50</li>
-        <li>EUR 100</li>
-        <li>10 GBP</li>
-        <li>¥1000</li>
-      </ul>
+
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <strong>Select text</strong> containing a currency value on any
+            webpage
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <strong>View the conversion</strong> in the popup that appears
+            automatically
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <strong>Change settings</strong> anytime by clicking the CurrencyMan
+            icon in your toolbar
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 15px">
+        <div class="icon-text">
+          <span class="icon">✓</span>
+          <strong>Supported Formats:</strong>
+        </div>
+        <div class="format-examples">
+          <span class="format-example">$10.50</span>
+          <span class="format-example">€100</span>
+          <span class="format-example">£25.99</span>
+          <span class="format-example">¥1000</span>
+          <span class="format-example">10 USD</span>
+          <span class="format-example">EUR 50</span>
+        </div>
+      </div>
     </div>
 
     <button id="saveButton">Save Settings</button>
@@ -318,7 +407,7 @@
       <p>CurrencyMan v1.0</p>
       <p>
         Made by
-        <a href="mailto:sankalpsingha@gmail.com">Sankalp Singha</a>
+        <a href="mailto:sankalpsingha@gmail.com">Sankalp Jessica Singha</a>
       </p>
     </div>
 
