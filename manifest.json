@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CurrencyMan",
   "version": "1.0",
-  "description": "Highlights currency values on webpages and converts them to your local currency",
+  "description": "Convert selected currency values on webpages to your local currency",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
     "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/*"

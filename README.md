@@ -1,13 +1,13 @@
 # CurrencyMan Chrome Extension
 
-CurrencyMan is a Chrome extension that automatically detects and highlights currency values on webpages. When you hover over a highlighted currency, it shows the converted value in your preferred local currency.
+CurrencyMan is a Chrome extension that allows you to convert currency values on webpages to your preferred local currency. Simply select any text containing a currency value, and a popup will show the converted amount.
 
 ## Features
 
-- Automatically detects and highlights currency values on any webpage
+- Convert currencies by selecting text on any webpage
 - Supports multiple currency formats (symbols and codes)
-- Converts currencies on hover using real-time exchange rates
-- Customizable settings for target currency and appearance
+- Uses real-time exchange rates for accurate conversions
+- Customizable target currency setting
 - Caches exchange rates to minimize API calls
 - Works with various currency formats and notations
 
@@ -34,12 +34,11 @@ The extension currently doesn't require icons to function. The `icon-generator.h
 ## Usage
 
 1. Browse any webpage with currency values
-2. Currency values will be automatically highlighted
-3. Hover over a highlighted currency to see the converted value in your preferred currency
+2. Select any text containing a currency value (e.g., "$10.50", "EUR 100", "10 GBP")
+3. A popup will appear showing the converted value in your preferred currency
 4. Click the extension icon in the toolbar to open the settings panel
 5. In the settings panel, you can:
    - Change your target currency
-   - Customize the highlight and tooltip colors
    - Save your preferences
 
 ## Testing
@@ -47,8 +46,8 @@ The extension currently doesn't require icons to function. The `icon-generator.h
 A test page is included to verify the extension's functionality:
 
 1. Open `test-page.html` in Chrome after installing the extension
-2. The page contains various currency formats to test the highlighting and conversion features
-3. Hover over any highlighted currency to see the conversion
+2. The page contains various currency formats to test the conversion feature
+3. Select any currency value on the page to see the conversion
 
 ## API Information
 
@@ -59,20 +58,21 @@ The API provides real-time exchange rates for various currencies.
 
 ## Customization
 
-You can customize the extension's appearance through the settings panel:
+You can customize the extension through the settings panel:
 
 1. Click the extension icon in the Chrome toolbar
-2. Adjust the highlight color, tooltip background color, and tooltip text color
+2. Select your preferred target currency
 3. Click "Save Settings" to apply your changes
 
 ## Troubleshooting
 
-If currencies are not being highlighted or converted:
+If currency conversion is not working:
 
 1. Make sure the extension is enabled in Chrome
 2. Check if you have an active internet connection for API access
-3. Try refreshing the page
-4. Clear the extension's cache by uninstalling and reinstalling it
+3. Try selecting a different currency value
+4. Make sure you're selecting text that contains a valid currency format
+5. Clear the extension's cache by uninstalling and reinstalling it
 
 ## License
 

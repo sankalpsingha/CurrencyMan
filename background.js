@@ -2,10 +2,7 @@
 
 // Default settings
 const DEFAULT_SETTINGS = {
-  targetCurrency: 'USD',
-  highlightColor: '#FFFF00',
-  tooltipColor: '#333333',
-  tooltipTextColor: '#FFFFFF'
+  targetCurrency: 'USD'
 };
 
 // Initialize extension settings

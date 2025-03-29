@@ -1,26 +1,13 @@
-/* Default styles for currency highlights and tooltips */
-.currency-highlight {
-  background-color: #FFFF00;
-  cursor: pointer;
-  padding: 0 2px;
-  border-radius: 2px;
-  transition: background-color 0.2s ease;
-}
-
-.currency-highlight:hover {
-  background-color: #FFCC00;
-}
-
-.currency-tooltip {
+/* Styles for currency conversion popup */
+.currency-conversion-popup {
   position: absolute;
   z-index: 9999;
   background-color: #333333;
   color: #FFFFFF;
-  padding: 5px 10px;
+  padding: 8px 12px;
   border-radius: 4px;
   font-size: 14px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  pointer-events: none;
   max-width: 300px;
   word-wrap: break-word;
   animation: fadeIn 0.2s ease-in-out;

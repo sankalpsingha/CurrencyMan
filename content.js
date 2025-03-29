@@ -75,31 +75,12 @@ const CURRENCY_SYMBOLS = {
   'TRX': 'TRX'
 };
 
-// Create a regex pattern for currency detection
+// Create a list of currency codes
 const CURRENCY_CODES = Object.keys(CURRENCY_SYMBOLS);
 const SYMBOLS = Object.values(CURRENCY_SYMBOLS);
 
-// Pattern for $10, $10.50, 10 USD, 10.50 EUR, etc.
-// Improved pattern to handle more cases including:
-// - Multiple spaces between currency and amount
-// - No-space cases like EUR50 or 50EUR
-// - Negative values with minus sign
-// - Parentheses for negative values like ($10.99)
-const CURRENCY_REGEX = new RegExp(
-  // Currency before number: $10, EUR 100, etc.
-  `(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*(-?[\\d,]+(\\.[\\d]+)?)|` +
-  // Number before currency: 10$, 100 EUR, etc.
-  `(-?[\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})|` +
-  // Parentheses for negative: ($10.99), (€10.99), etc.
-  `\\(\\s*(${SYMBOLS.map(s => '\\' + s).join('|')})\\s*([\\d,]+(\\.[\\d]+)?)\\s*\\)|` +
-  // Parentheses for negative with currency after: (10.99$), (10.99 EUR), etc.
-  `\\(\\s*([\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*\\)`,
-  'gi'
-);
-
 // Store user's preferred currency
 let targetCurrency = 'USD';
-let conversionRates = {};
 
 // Initialize the extension
 function init() {
@@ -109,113 +90,87 @@ function init() {
       targetCurrency = result.targetCurrency;
     }
     
-    // Start scanning the page
-    scanPage();
+    // Set up the selection handler
+    document.addEventListener('mouseup', handleTextSelection);
   });
 
   // Listen for changes in storage
   chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.targetCurrency) {
       targetCurrency = changes.targetCurrency.newValue;
-      // Re-scan the page with new settings
-      removeHighlights();
-      scanPage();
     }
   });
 }
 
-// Scan the page for currency values
-function scanPage() {
-  // Walk through all text nodes in the document
-  const walker = document.createTreeWalker(
-    document.body,
-    NodeFilter.SHOW_TEXT,
-    {
-      acceptNode: function(node) {
-        // Skip script and style elements
-        if (node.parentNode.tagName === 'SCRIPT' || 
-            node.parentNode.tagName === 'STYLE' ||
-            node.parentNode.classList.contains('currency-highlight') ||
-            node.parentNode.classList.contains('currency-tooltip')) {
-          return NodeFilter.FILTER_REJECT;
-        }
-        return NodeFilter.FILTER_ACCEPT;
-      }
-    }
-  );
-
-  const textNodes = [];
-  let currentNode;
+// Handle text selection
+function handleTextSelection() {
+  // Remove any existing conversion popups
+  removeConversionPopups();
   
-  while (currentNode = walker.nextNode()) {
-    textNodes.push(currentNode);
+  // Get the selected text
+  const selection = window.getSelection();
+  if (!selection || selection.isCollapsed || selection.toString().trim() === '') {
+    return;
   }
-
-  // Process each text node
-  textNodes.forEach(processTextNode);
+  
+  const selectedText = selection.toString().trim();
+  
+  // Try to parse the currency from the selected text
+  const currencyInfo = parseCurrencyFromText(selectedText);
+  
+  if (currencyInfo) {
+    // Show conversion popup
+    showConversionPopup(currencyInfo.currencyCode, currencyInfo.value, selection);
+  }
 }
 
-// Process a text node to find and highlight currency values
-function processTextNode(textNode) {
-  const text = textNode.nodeValue;
-  const matches = [...text.matchAll(CURRENCY_REGEX)];
+// Parse currency from text
+function parseCurrencyFromText(text) {
+  // Try to match currency code or symbol followed by number
+  // e.g., $10, EUR 100, etc.
+  let match = text.match(new RegExp(`(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*(-?[\\d,]+(\\.[\\d]+)?)`, 'i'));
   
-  if (matches.length === 0) return;
-  
-  const fragment = document.createDocumentFragment();
-  let lastIndex = 0;
-  
-  for (const match of matches) {
-    // Add text before the match
-    if (match.index > lastIndex) {
-      fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
-    }
-    
-    // Create highlighted span for the currency
-    const span = document.createElement('span');
-    span.className = 'currency-highlight';
-    span.textContent = match[0];
-    
-    // Extract currency code and value
-    let currencyCode, value;
-    
-    if (match[1] && match[2]) {
-      // Format: $10, EUR 100
-      currencyCode = getCurrencyCode(match[1]);
-      value = parseFloat(match[2].replace(/,/g, ''));
-    } else if (match[4] && match[6]) {
-      // Format: 10$, 100 EUR
-      currencyCode = getCurrencyCode(match[6]);
-      value = parseFloat(match[4].replace(/,/g, ''));
-    } else if (match[7] && match[8]) {
-      // Format: ($10.99), (€10.99) - parentheses for negative
-      currencyCode = getCurrencyCode(match[7]);
-      value = -parseFloat(match[8].replace(/,/g, '')); // Negative value
-    } else if (match[10] && match[12]) {
-      // Format: (10.99$), (10.99 EUR) - parentheses for negative
-      currencyCode = getCurrencyCode(match[12]);
-      value = -parseFloat(match[10].replace(/,/g, '')); // Negative value
-    }
-    
-    // Store the original currency data as attributes
-    span.setAttribute('data-currency-code', currencyCode);
-    span.setAttribute('data-currency-value', value);
-    
-    // Add hover event
-    span.addEventListener('mouseover', handleCurrencyHover);
-    span.addEventListener('mouseout', handleCurrencyMouseOut);
-    
-    fragment.appendChild(span);
-    lastIndex = match.index + match[0].length;
+  if (match) {
+    return {
+      currencyCode: getCurrencyCode(match[1]),
+      value: parseFloat(match[2].replace(/,/g, ''))
+    };
   }
   
-  // Add any remaining text
-  if (lastIndex < text.length) {
-    fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+  // Try to match number followed by currency code or symbol
+  // e.g., 10$, 100 EUR, etc.
+  match = text.match(new RegExp(`(-?[\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})`, 'i'));
+  
+  if (match) {
+    return {
+      currencyCode: getCurrencyCode(match[3]),
+      value: parseFloat(match[1].replace(/,/g, ''))
+    };
   }
   
-  // Replace the original text node with our processed fragment
-  textNode.parentNode.replaceChild(fragment, textNode);
+  // Try to match parentheses for negative values
+  // e.g., ($10.99), (€10.99), etc.
+  match = text.match(new RegExp(`\\(\\s*(${SYMBOLS.map(s => '\\' + s).join('|')})\\s*([\\d,]+(\\.[\\d]+)?)\\s*\\)`, 'i'));
+  
+  if (match) {
+    return {
+      currencyCode: getCurrencyCode(match[1]),
+      value: -parseFloat(match[2].replace(/,/g, '')) // Negative value
+    };
+  }
+  
+  // Try to match parentheses for negative with currency after
+  // e.g., (10.99$), (10.99 EUR), etc.
+  match = text.match(new RegExp(`\\(\\s*([\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*\\)`, 'i'));
+  
+  if (match) {
+    return {
+      currencyCode: getCurrencyCode(match[3]),
+      value: -parseFloat(match[1].replace(/,/g, '')) // Negative value
+    };
+  }
+  
+  return null;
 }
 
 // Get currency code from symbol or code
@@ -238,43 +193,69 @@ function getCurrencyCode(text) {
   return 'USD';
 }
 
-// Handle hovering over a currency value
-function handleCurrencyHover(event) {
-  const span = event.target;
-  const currencyCode = span.getAttribute('data-currency-code');
-  const value = parseFloat(span.getAttribute('data-currency-value'));
+// Show conversion popup
+function showConversionPopup(fromCurrency, amount, selection) {
+  // Create popup
+  const popup = document.createElement('div');
+  popup.className = 'currency-conversion-popup';
+  popup.textContent = 'Loading...';
   
-  // Create tooltip
-  const tooltip = document.createElement('div');
-  tooltip.className = 'currency-tooltip';
-  tooltip.textContent = 'Loading...';
+  // Position the popup near the selection
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  popup.style.position = 'absolute';
+  popup.style.left = `${rect.left + window.scrollX}px`;
+  popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
+  popup.style.backgroundColor = '#333333';
+  popup.style.color = '#FFFFFF';
+  popup.style.padding = '8px 12px';
+  popup.style.borderRadius = '4px';
+  popup.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
+  popup.style.zIndex = '9999';
+  popup.style.fontSize = '14px';
   
-  // Position the tooltip
-  const rect = span.getBoundingClientRect();
-  tooltip.style.left = `${rect.left + window.scrollX}px`;
-  tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+  // Add close button
+  const closeButton = document.createElement('span');
+  closeButton.textContent = '×';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '2px';
+  closeButton.style.right = '5px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.fontSize = '16px';
+  closeButton.addEventListener('click', () => popup.remove());
+  popup.appendChild(closeButton);
   
-  document.body.appendChild(tooltip);
+  document.body.appendChild(popup);
   
   // Convert the currency
-  convertCurrency(currencyCode, targetCurrency, value)
+  convertCurrency(fromCurrency, targetCurrency, amount)
     .then(convertedValue => {
-      if (tooltip.parentNode) { // Check if tooltip still exists
-        tooltip.textContent = `${value} ${currencyCode} = ${convertedValue.toFixed(2)} ${targetCurrency}`;
+      if (popup.parentNode) { // Check if popup still exists
+        popup.textContent = `${amount} ${fromCurrency} = ${convertedValue.toFixed(2)} ${targetCurrency}`;
+        popup.appendChild(closeButton); // Re-add the close button
       }
     })
     .catch(error => {
-      if (tooltip.parentNode) { // Check if tooltip still exists
-        tooltip.textContent = `Error: Could not convert currency`;
+      if (popup.parentNode) { // Check if popup still exists
+        popup.textContent = `Error: Could not convert currency`;
+        popup.appendChild(closeButton); // Re-add the close button
         console.error('Currency conversion error:', error);
       }
     });
+    
+  // Close popup when clicking outside
+  document.addEventListener('mousedown', function closePopupOnClickOutside(e) {
+    if (!popup.contains(e.target)) {
+      popup.remove();
+      document.removeEventListener('mousedown', closePopupOnClickOutside);
+    }
+  });
 }
 
-// Handle mouse out event
-function handleCurrencyMouseOut() {
-  const tooltips = document.querySelectorAll('.currency-tooltip');
-  tooltips.forEach(tooltip => tooltip.remove());
+// Remove all conversion popups
+function removeConversionPopups() {
+  const popups = document.querySelectorAll('.currency-conversion-popup');
+  popups.forEach(popup => popup.remove());
 }
 
 // Convert currency using the API
@@ -360,21 +341,6 @@ async function cacheRate(fromCurrency, toCurrency, rate) {
       }, resolve);
     });
   });
-}
-
-// Remove all currency highlights
-function removeHighlights() {
-  const highlights = document.querySelectorAll('.currency-highlight');
-  
-  highlights.forEach(highlight => {
-    const parent = highlight.parentNode;
-    const text = document.createTextNode(highlight.textContent);
-    parent.replaceChild(text, highlight);
-  });
-  
-  // Also remove any tooltips
-  const tooltips = document.querySelectorAll('.currency-tooltip');
-  tooltips.forEach(tooltip => tooltip.remove());
 }
 
 // Initialize when the DOM is fully loaded
