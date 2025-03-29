@@ -4,6 +4,8 @@
 
 CurrencyMan is a Chrome extension that allows you to convert currency values on webpages to your preferred local currency. Simply select any text containing a currency value, and a popup will show the converted amount.
 
+> **Note:** This extension is currently under review in the Chrome Web Store. You can install it manually following the instructions below.
+
 ## Features
 
 ![Promo Tile](assets/images/promo-tile.jpg)
@@ -37,6 +39,19 @@ Each directory contains a README.md file with more information.
 
 ## Installation
 
+### From Chrome Web Store (Coming Soon)
+
+The extension is currently under review in the Chrome Web Store. Once approved, you'll be able to install it directly from there.
+
+### Manual Installation
+
+1. Download the latest release from the [Releases](https://github.com/yourusername/currencyman/releases) page
+2. Unzip the downloaded file to a location on your computer
+3. Open Chrome and navigate to `chrome://extensions/`
+4. Enable "Developer mode" by toggling the switch in the top right corner
+5. Click "Load unpacked" and select the unzipped directory
+6. The extension should now be installed and active
+
 ### From Source Code
 
 1. Clone or download this repository
@@ -57,9 +72,29 @@ npm run build
 
 ### Running Tests
 
+#### Unit Tests
+
+The project includes comprehensive unit tests for the currency detection regex patterns:
+
 ```
 npm test
 ```
+
+These tests verify that the extension can correctly identify and parse various currency formats, including:
+- Different currency symbols and codes
+- Negative values (with minus sign or parentheses)
+- Thousands separators
+- Various decimal formats
+- Edge cases and potential false positives
+
+#### Manual Testing
+
+Manual test pages are included to verify the extension's functionality in a browser:
+
+1. Build and install the extension
+2. Open `test/manual/test-page.html` in Chrome
+3. The page contains various currency formats to test the conversion feature
+4. Select any currency value on the page to see the conversion
 
 ### Watch Mode (for development)
 
@@ -77,15 +112,6 @@ npm run watch
    - Change your target currency
    - Save your preferences
 
-## Testing
-
-Manual test pages are included to verify the extension's functionality:
-
-1. Build and install the extension
-2. Open `test/manual/test-page.html` in Chrome
-3. The page contains various currency formats to test the conversion feature
-4. Select any currency value on the page to see the conversion
-
 ## API Information
 
 This extension uses the free currency conversion API from:
@@ -102,6 +128,22 @@ If currency conversion is not working:
 3. Try selecting a different currency value
 4. Make sure you're selecting text that contains a valid currency format
 5. Clear the extension's cache by uninstalling and reinstalling it
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Before submitting your PR, please make sure all tests pass:
+
+```
+npm test
+```
 
 ## License
 
