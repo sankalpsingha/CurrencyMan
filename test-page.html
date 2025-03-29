@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CurrencyMan Test Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      h1,
+      h2 {
+        color: #333;
+      }
+
+      .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f0f0f0;
+      }
+
+      .price {
+        font-weight: bold;
+      }
+
+      .product {
+        display: flex;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .product-image {
+        width: 100px;
+        height: 100px;
+        background-color: #ddd;
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .product-details {
+        flex: 1;
+      }
+
+      .product-price {
+        font-weight: bold;
+        color: #4285f4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CurrencyMan Test Page</h1>
+    <p>
+      This page contains various currency formats to test the CurrencyMan Chrome
+      extension. Hover over any highlighted currency to see the conversion.
+    </p>
+
+    <div class="section">
+      <h2>Basic Currency Formats</h2>
+      <ul>
+        <li>US Dollar: $10.99</li>
+        <li>Euro: €15.50</li>
+        <li>British Pound: £20</li>
+        <li>Japanese Yen: ¥1500</li>
+        <li>Canadian Dollar: C$25.75</li>
+        <li>Australian Dollar: A$30</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Currency Codes</h2>
+      <ul>
+        <li>USD 45.99</li>
+        <li>EUR 50</li>
+        <li>GBP 35.50</li>
+        <li>JPY 2000</li>
+        <li>CAD 60</li>
+        <li>AUD 75.25</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Mixed Formats</h2>
+      <ul>
+        <li>The product costs $19.99 or approximately €18.50</li>
+        <li>Price range: £10 - £20</li>
+        <li>International shipping: USD 5.99 + €2 handling fee</li>
+        <li>Discount: 10% off the regular price of ¥5000</li>
+        <li>Total: $49.99 (equivalent to approximately £38)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Product Catalog</h2>
+      <div class="product">
+        <div class="product-image">Product 1</div>
+        <div class="product-details">
+          <h3>Premium Headphones</h3>
+          <p>High-quality wireless headphones with noise cancellation.</p>
+          <p class="product-price">$299.99</p>
+        </div>
+      </div>
+
+      <div class="product">
+        <div class="product-image">Product 2</div>
+        <div class="product-details">
+          <h3>Smart Watch</h3>
+          <p>Fitness tracker with heart rate monitoring and GPS.</p>
+          <p class="product-price">€249.50</p>
+        </div>
+      </div>
+
+      <div class="product">
+        <div class="product-image">Product 3</div>
+        <div class="product-details">
+          <h3>Bluetooth Speaker</h3>
+          <p>Portable speaker with 20 hours of battery life.</p>
+          <p class="product-price">£129.99</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Price Comparison Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>US Price</th>
+            <th>EU Price</th>
+            <th>UK Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Smartphone</td>
+            <td>$999</td>
+            <td>€950</td>
+            <td>£899</td>
+          </tr>
+          <tr>
+            <td>Laptop</td>
+            <td>$1299</td>
+            <td>€1250</td>
+            <td>£1199</td>
+          </tr>
+          <tr>
+            <td>Tablet</td>
+            <td>$499</td>
+            <td>€480</td>
+            <td>£450</td>
+          </tr>
+          <tr>
+            <td>Camera</td>
+            <td>$799</td>
+            <td>€760</td>
+            <td>£720</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Currency with Thousands Separators</h2>
+      <ul>
+        <li>Large amount: $1,000,000.00</li>
+        <li>Budget: €10,500.50</li>
+        <li>Investment: £250,000</li>
+        <li>Revenue: USD 5,000,000</li>
+        <li>Expenses: JPY 1,500,000</li>
+      </ul>
+    </div>
+  </body>
+</html>

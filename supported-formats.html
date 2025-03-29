@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CurrencyMan Supported Formats</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      h1,
+      h2 {
+        color: #333;
+      }
+
+      .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f0f0f0;
+      }
+
+      .example {
+        font-family: monospace;
+        background-color: #eee;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+
+      .note {
+        font-style: italic;
+        color: #666;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CurrencyMan Supported Formats</h1>
+    <p>
+      This page documents all the currency formats that the CurrencyMan
+      extension can detect and highlight. Use this as a reference for testing
+      and understanding the extension's capabilities.
+    </p>
+
+    <div class="section">
+      <h2>Currency Symbols</h2>
+      <p>
+        The extension recognizes the following currency symbols when they appear
+        before or after a number. This is a subset of the supported currencies -
+        the extension supports over 150 currencies in total.
+      </p>
+
+      <h3>Major Fiat Currencies</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Symbol</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>US Dollar</td>
+            <td>$</td>
+            <td>
+              <span class="example">$10.99</span>,
+              <span class="example">10.99$</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Euro</td>
+            <td>€</td>
+            <td>
+              <span class="example">€15.50</span>,
+              <span class="example">15.50€</span>
+            </td>
+          </tr>
+          <tr>
+            <td>British Pound</td>
+            <td>£</td>
+            <td>
+              <span class="example">£20</span>,
+              <span class="example">20£</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Japanese Yen</td>
+            <td>¥</td>
+            <td>
+              <span class="example">¥1500</span>,
+              <span class="example">1500¥</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Indian Rupee</td>
+            <td>₹</td>
+            <td>
+              <span class="example">₹500</span>,
+              <span class="example">500₹</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Chinese Yuan</td>
+            <td>¥</td>
+            <td>
+              <span class="example">¥100</span>,
+              <span class="example">100¥</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Australian Dollar</td>
+            <td>A$</td>
+            <td>
+              <span class="example">A$30</span>,
+              <span class="example">30A$</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Canadian Dollar</td>
+            <td>C$</td>
+            <td>
+              <span class="example">C$25.75</span>,
+              <span class="example">25.75C$</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Swiss Franc</td>
+            <td>Fr</td>
+            <td>
+              <span class="example">Fr50</span>,
+              <span class="example">50Fr</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Hong Kong Dollar</td>
+            <td>HK$</td>
+            <td>
+              <span class="example">HK$200</span>,
+              <span class="example">200HK$</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Other Fiat Currencies</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Symbol</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Russian Ruble</td>
+            <td>₽</td>
+            <td>
+              <span class="example">₽100</span>,
+              <span class="example">100₽</span>
+            </td>
+          </tr>
+          <tr>
+            <td>South Korean Won</td>
+            <td>₩</td>
+            <td>
+              <span class="example">₩1000</span>,
+              <span class="example">1000₩</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Thai Baht</td>
+            <td>฿</td>
+            <td>
+              <span class="example">฿500</span>,
+              <span class="example">500฿</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Brazilian Real</td>
+            <td>R$</td>
+            <td>
+              <span class="example">R$50</span>,
+              <span class="example">50R$</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Polish Zloty</td>
+            <td>zł</td>
+            <td>
+              <span class="example">50zł</span>,
+              <span class="example">zł50</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Israeli Shekel</td>
+            <td>₪</td>
+            <td>
+              <span class="example">₪100</span>,
+              <span class="example">100₪</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Turkish Lira</td>
+            <td>₺</td>
+            <td>
+              <span class="example">₺200</span>,
+              <span class="example">200₺</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Philippine Peso</td>
+            <td>₱</td>
+            <td>
+              <span class="example">₱500</span>,
+              <span class="example">500₱</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Vietnamese Dong</td>
+            <td>₫</td>
+            <td>
+              <span class="example">₫10000</span>,
+              <span class="example">10000₫</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Ukrainian Hryvnia</td>
+            <td>₴</td>
+            <td>
+              <span class="example">₴100</span>,
+              <span class="example">100₴</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Cryptocurrencies</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Symbol</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bitcoin</td>
+            <td>₿</td>
+            <td>
+              <span class="example">₿0.5</span>,
+              <span class="example">0.5₿</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Ethereum</td>
+            <td>Ξ</td>
+            <td>
+              <span class="example">Ξ2.5</span>,
+              <span class="example">2.5Ξ</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Litecoin</td>
+            <td>Ł</td>
+            <td>
+              <span class="example">Ł10</span>,
+              <span class="example">10Ł</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Dogecoin</td>
+            <td>Ð</td>
+            <td>
+              <span class="example">Ð1000</span>,
+              <span class="example">1000Ð</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Tether</td>
+            <td>₮</td>
+            <td>
+              <span class="example">₮100</span>,
+              <span class="example">100₮</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Currency Codes</h2>
+      <p>
+        The extension recognizes currency codes when they appear before or after
+        a number. The extension supports over 150 currencies from the API,
+        including all major fiat currencies and cryptocurrencies. Here are some
+        examples:
+      </p>
+
+      <h3>Major Fiat Currency Codes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Code</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>US Dollar</td>
+            <td>USD</td>
+            <td>
+              <span class="example">USD 10.99</span>,
+              <span class="example">10.99 USD</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Euro</td>
+            <td>EUR</td>
+            <td>
+              <span class="example">EUR 15.50</span>,
+              <span class="example">15.50 EUR</span>
+            </td>
+          </tr>
+          <tr>
+            <td>British Pound</td>
+            <td>GBP</td>
+            <td>
+              <span class="example">GBP 20</span>,
+              <span class="example">20 GBP</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Japanese Yen</td>
+            <td>JPY</td>
+            <td>
+              <span class="example">JPY 1500</span>,
+              <span class="example">1500 JPY</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Indian Rupee</td>
+            <td>INR</td>
+            <td>
+              <span class="example">INR 500</span>,
+              <span class="example">500 INR</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Chinese Yuan</td>
+            <td>CNY</td>
+            <td>
+              <span class="example">CNY 100</span>,
+              <span class="example">100 CNY</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Cryptocurrency Codes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Code</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bitcoin</td>
+            <td>BTC</td>
+            <td>
+              <span class="example">BTC 0.5</span>,
+              <span class="example">0.5 BTC</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Ethereum</td>
+            <td>ETH</td>
+            <td>
+              <span class="example">ETH 2.5</span>,
+              <span class="example">2.5 ETH</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Tether</td>
+            <td>USDT</td>
+            <td>
+              <span class="example">USDT 100</span>,
+              <span class="example">100 USDT</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Binance Coin</td>
+            <td>BNB</td>
+            <td>
+              <span class="example">BNB 10</span>,
+              <span class="example">10 BNB</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Ripple</td>
+            <td>XRP</td>
+            <td>
+              <span class="example">XRP 1000</span>,
+              <span class="example">1000 XRP</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Cardano</td>
+            <td>ADA</td>
+            <td>
+              <span class="example">ADA 500</span>,
+              <span class="example">500 ADA</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Other Supported Currencies</h3>
+      <p>
+        The extension supports all currencies available in the API, including:
+      </p>
+      <ul
+        style="
+          columns: 4;
+          column-gap: 20px;
+          list-style-type: none;
+          padding-left: 0;
+        "
+      >
+        <li>AED - UAE Dirham</li>
+        <li>AFN - Afghan Afghani</li>
+        <li>ALL - Albanian Lek</li>
+        <li>AMD - Armenian Dram</li>
+        <li>ANG - Netherlands Antillean Guilder</li>
+        <li>AOA - Angolan Kwanza</li>
+        <li>ARS - Argentine Peso</li>
+        <li>AUD - Australian Dollar</li>
+        <li>AWG - Aruban Florin</li>
+        <li>AZN - Azerbaijani Manat</li>
+        <li>BAM - Bosnia-Herzegovina Convertible Mark</li>
+        <li>BBD - Barbadian Dollar</li>
+        <li>BDT - Bangladeshi Taka</li>
+        <li>BGN - Bulgarian Lev</li>
+        <li>BHD - Bahraini Dinar</li>
+        <li>BIF - Burundian Franc</li>
+        <li>BMD - Bermudan Dollar</li>
+        <li>BND - Brunei Dollar</li>
+        <li>BOB - Bolivian Boliviano</li>
+        <li>BRL - Brazilian Real</li>
+        <li>BSD - Bahamian Dollar</li>
+        <li>BTN - Bhutanese Ngultrum</li>
+        <li>BWP - Botswanan Pula</li>
+        <li>BYN - Belarusian Ruble</li>
+        <li>BZD - Belize Dollar</li>
+        <li>CAD - Canadian Dollar</li>
+        <li>CDF - Congolese Franc</li>
+        <li>CHF - Swiss Franc</li>
+        <li>CLP - Chilean Peso</li>
+        <li>CNY - Chinese Yuan</li>
+        <li>COP - Colombian Peso</li>
+        <li>CRC - Costa Rican Colón</li>
+        <li>CUC - Cuban Convertible Peso</li>
+        <li>CUP - Cuban Peso</li>
+        <li>CVE - Cape Verdean Escudo</li>
+        <li>CZK - Czech Republic Koruna</li>
+        <li>DJF - Djiboutian Franc</li>
+        <li>DKK - Danish Krone</li>
+        <li>DOP - Dominican Peso</li>
+        <li>DZD - Algerian Dinar</li>
+        <li>EGP - Egyptian Pound</li>
+        <li>ERN - Eritrean Nakfa</li>
+        <li>ETB - Ethiopian Birr</li>
+        <li>EUR - Euro</li>
+        <li>FJD - Fijian Dollar</li>
+        <li>FKP - Falkland Islands Pound</li>
+        <li>GBP - British Pound</li>
+        <li>GEL - Georgian Lari</li>
+        <li>GHS - Ghanaian Cedi</li>
+        <li>GIP - Gibraltar Pound</li>
+        <li>GMD - Gambian Dalasi</li>
+        <li>GNF - Guinean Franc</li>
+        <li>GTQ - Guatemalan Quetzal</li>
+        <li>GYD - Guyanaese Dollar</li>
+        <li>HKD - Hong Kong Dollar</li>
+        <li>HNL - Honduran Lempira</li>
+        <li>HRK - Croatian Kuna</li>
+        <li>HTG - Haitian Gourde</li>
+        <li>HUF - Hungarian Forint</li>
+        <li>IDR - Indonesian Rupiah</li>
+        <li>ILS - Israeli New Shekel</li>
+        <li>INR - Indian Rupee</li>
+        <li>IQD - Iraqi Dinar</li>
+        <li>IRR - Iranian Rial</li>
+        <li>ISK - Icelandic Króna</li>
+        <li>JMD - Jamaican Dollar</li>
+        <li>JOD - Jordanian Dinar</li>
+        <li>JPY - Japanese Yen</li>
+        <li>KES - Kenyan Shilling</li>
+        <li>KGS - Kyrgystani Som</li>
+        <li>KHR - Cambodian Riel</li>
+        <li>KMF - Comorian Franc</li>
+        <li>KPW - North Korean Won</li>
+        <li>KRW - South Korean Won</li>
+        <li>KWD - Kuwaiti Dinar</li>
+        <li>KYD - Cayman Islands Dollar</li>
+        <li>KZT - Kazakhstani Tenge</li>
+        <li>LAK - Laotian Kip</li>
+        <li>LBP - Lebanese Pound</li>
+        <li>LKR - Sri Lankan Rupee</li>
+        <li>LRD - Liberian Dollar</li>
+        <li>LSL - Lesotho Loti</li>
+        <li>LYD - Libyan Dinar</li>
+        <li>MAD - Moroccan Dirham</li>
+        <li>MDL - Moldovan Leu</li>
+        <li>MGA - Malagasy Ariary</li>
+        <li>MKD - Macedonian Denar</li>
+        <li>MMK - Myanma Kyat</li>
+        <li>MNT - Mongolian Tugrik</li>
+        <li>MOP - Macanese Pataca</li>
+        <li>MRU - Mauritanian Ouguiya</li>
+        <li>MUR - Mauritian Rupee</li>
+        <li>MVR - Maldivian Rufiyaa</li>
+        <li>MWK - Malawian Kwacha</li>
+        <li>MXN - Mexican Peso</li>
+        <li>MYR - Malaysian Ringgit</li>
+        <li>MZN - Mozambican Metical</li>
+        <li>NAD - Namibian Dollar</li>
+        <li>NGN - Nigerian Naira</li>
+        <li>NIO - Nicaraguan Córdoba</li>
+        <li>NOK - Norwegian Krone</li>
+        <li>NPR - Nepalese Rupee</li>
+        <li>NZD - New Zealand Dollar</li>
+        <li>OMR - Omani Rial</li>
+        <li>PAB - Panamanian Balboa</li>
+        <li>PEN - Peruvian Nuevo Sol</li>
+        <li>PGK - Papua New Guinean Kina</li>
+        <li>PHP - Philippine Peso</li>
+        <li>PKR - Pakistani Rupee</li>
+        <li>PLN - Polish Zloty</li>
+        <li>PYG - Paraguayan Guarani</li>
+        <li>QAR - Qatari Rial</li>
+        <li>RON - Romanian Leu</li>
+        <li>RSD - Serbian Dinar</li>
+        <li>RUB - Russian Ruble</li>
+        <li>RWF - Rwandan Franc</li>
+        <li>SAR - Saudi Riyal</li>
+        <li>SBD - Solomon Islands Dollar</li>
+        <li>SCR - Seychellois Rupee</li>
+        <li>SDG - Sudanese Pound</li>
+        <li>SEK - Swedish Krona</li>
+        <li>SGD - Singapore Dollar</li>
+        <li>SHP - Saint Helena Pound</li>
+        <li>SLE - Sierra Leonean Leone</li>
+        <li>SOS - Somali Shilling</li>
+        <li>SRD - Surinamese Dollar</li>
+        <li>STN - São Tomé and Príncipe Dobra</li>
+        <li>SVC - Salvadoran Colón</li>
+        <li>SYP - Syrian Pound</li>
+        <li>SZL - Swazi Lilangeni</li>
+        <li>THB - Thai Baht</li>
+        <li>TJS - Tajikistani Somoni</li>
+        <li>TMT - Turkmenistani Manat</li>
+        <li>TND - Tunisian Dinar</li>
+        <li>TOP - Tongan Pa'anga</li>
+        <li>TRY - Turkish Lira</li>
+        <li>TTD - Trinidad and Tobago Dollar</li>
+        <li>TWD - New Taiwan Dollar</li>
+        <li>TZS - Tanzanian Shilling</li>
+        <li>UAH - Ukrainian Hryvnia</li>
+        <li>UGX - Ugandan Shilling</li>
+        <li>USD - US Dollar</li>
+        <li>UYU - Uruguayan Peso</li>
+        <li>UZS - Uzbekistan Som</li>
+        <li>VES - Venezuelan Bolívar Soberano</li>
+        <li>VND - Vietnamese Dong</li>
+        <li>VUV - Vanuatu Vatu</li>
+        <li>WST - Samoan Tala</li>
+        <li>XAF - CFA Franc BEAC</li>
+        <li>XCD - East Caribbean Dollar</li>
+        <li>XOF - CFA Franc BCEAO</li>
+        <li>XPF - CFP Franc</li>
+        <li>YER - Yemeni Rial</li>
+        <li>ZAR - South African Rand</li>
+        <li>ZMW - Zambian Kwacha</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Number Formats</h2>
+      <p>The extension supports various number formats:</p>
+      <ul>
+        <li>
+          <strong>Integers:</strong>
+          <span class="example">$100</span>,
+          <span class="example">€50</span>
+        </li>
+        <li>
+          <strong>Decimals:</strong>
+          <span class="example">$10.99</span>,
+          <span class="example">€15.50</span>
+        </li>
+        <li>
+          <strong>Thousands separators (commas):</strong>
+          <span class="example">$1,000</span>,
+          <span class="example">€1,500.75</span>
+        </li>
+        <li>
+          <strong>Large numbers:</strong>
+          <span class="example">$1,000,000</span>,
+          <span class="example">€1,000,000.00</span>
+        </li>
+      </ul>
+      <p class="note">
+        Note: The extension currently supports comma (,) as the thousands
+        separator and period (.) as the decimal separator. Other formats like
+        space as thousands separator or comma as decimal separator are not
+        currently supported.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Spacing Variations</h2>
+      <p>The extension handles various spacing between currency and amount:</p>
+      <ul>
+        <li>
+          <strong>No space:</strong>
+          <span class="example">$100</span>,
+          <span class="example">100€</span>
+        </li>
+        <li>
+          <strong>Single space:</strong>
+          <span class="example">$ 100</span>,
+          <span class="example">100 €</span>
+        </li>
+        <li>
+          <strong>Code with space:</strong>
+          <span class="example">USD 100</span>,
+          <span class="example">100 EUR</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Limitations</h2>
+      <p>The extension has some limitations to be aware of:</p>
+      <ul>
+        <li>
+          Currency symbols that are also used in other contexts (like $ in
+          programming) might be incorrectly highlighted
+        </li>
+        <li>
+          Very uncommon currency formats or symbols might not be recognized
+        </li>
+        <li>
+          Currency values embedded in complex text without proper spacing might
+          not be detected
+        </li>
+        <li>
+          The extension might not detect currencies in images or non-text
+          elements
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
