@@ -63,13 +63,26 @@ The content script is responsible for:
 
 #### Key Implementation Details:
 
-- **Currency Detection**: Uses a comprehensive regex pattern to match various currency formats:
+- **Currency Detection**: Uses an improved regex pattern to match various currency formats:
   ```javascript
   const CURRENCY_REGEX = new RegExp(
-    `(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*([\\d,]+(\\.[\\d]+)?)|([\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})`,
+    // Currency before number: $10, EUR 100, etc.
+    `(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*(-?[\\d,]+(\\.[\\d]+)?)|` +
+    // Number before currency: 10$, 100 EUR, etc.
+    `(-?[\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})|` +
+    // Parentheses for negative: ($10.99), (€10.99), etc.
+    `\\(\\s*(${SYMBOLS.map(s => '\\' + s).join('|')})\\s*([\\d,]+(\\.[\\d]+)?)\\s*\\)|` +
+    // Parentheses for negative with currency after: (10.99$), (10.99 EUR), etc.
+    `\\(\\s*([\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*\\)`,
     'gi'
   );
   ```
+  
+  The improved regex pattern handles:
+  - Multiple spaces between currency and amount
+  - No-space cases like EUR50 or 50EUR
+  - Negative values with minus sign
+  - Parentheses for negative values like ($10.99)
 
 - **DOM Traversal**: Uses a TreeWalker to efficiently scan text nodes:
   ```javascript

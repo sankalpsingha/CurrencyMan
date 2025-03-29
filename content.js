@@ -80,8 +80,20 @@ const CURRENCY_CODES = Object.keys(CURRENCY_SYMBOLS);
 const SYMBOLS = Object.values(CURRENCY_SYMBOLS);
 
 // Pattern for $10, $10.50, 10 USD, 10.50 EUR, etc.
+// Improved pattern to handle more cases including:
+// - Multiple spaces between currency and amount
+// - No-space cases like EUR50 or 50EUR
+// - Negative values with minus sign
+// - Parentheses for negative values like ($10.99)
 const CURRENCY_REGEX = new RegExp(
-  `(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*([\\d,]+(\\.[\\d]+)?)|([\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})`,
+  // Currency before number: $10, EUR 100, etc.
+  `(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*(-?[\\d,]+(\\.[\\d]+)?)|` +
+  // Number before currency: 10$, 100 EUR, etc.
+  `(-?[\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})|` +
+  // Parentheses for negative: ($10.99), (€10.99), etc.
+  `\\(\\s*(${SYMBOLS.map(s => '\\' + s).join('|')})\\s*([\\d,]+(\\.[\\d]+)?)\\s*\\)|` +
+  // Parentheses for negative with currency after: (10.99$), (10.99 EUR), etc.
+  `\\(\\s*([\\d,]+(\\.[\\d]+)?)\\s*(${SYMBOLS.map(s => '\\' + s).join('|')}|${CURRENCY_CODES.join('|')})\\s*\\)`,
   'gi'
 );
 
@@ -175,6 +187,14 @@ function processTextNode(textNode) {
       // Format: 10$, 100 EUR
       currencyCode = getCurrencyCode(match[6]);
       value = parseFloat(match[4].replace(/,/g, ''));
+    } else if (match[7] && match[8]) {
+      // Format: ($10.99), (€10.99) - parentheses for negative
+      currencyCode = getCurrencyCode(match[7]);
+      value = -parseFloat(match[8].replace(/,/g, '')); // Negative value
+    } else if (match[10] && match[12]) {
+      // Format: (10.99$), (10.99 EUR) - parentheses for negative
+      currencyCode = getCurrencyCode(match[12]);
+      value = -parseFloat(match[10].replace(/,/g, '')); // Negative value
     }
     
     // Store the original currency data as attributes

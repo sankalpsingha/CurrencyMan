@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CurrencyMan Regex Test Cases</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #333;
+      }
+
+      .test-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      .test-case {
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-input {
+        font-family: monospace;
+        background-color: #f8f8f8;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      .test-result {
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      .pass {
+        color: #4caf50;
+      }
+
+      .fail {
+        color: #f44336;
+      }
+
+      .expected {
+        font-style: italic;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      .controls {
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      button:hover {
+        background-color: #3367d6;
+      }
+
+      #regex-input {
+        width: 100%;
+        padding: 10px;
+        font-family: monospace;
+        margin-bottom: 10px;
+      }
+
+      .highlight {
+        background-color: #ffff00;
+        padding: 0 2px;
+        border-radius: 2px;
+      }
+
+      .debug-info {
+        font-family: monospace;
+        font-size: 12px;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      .test-group {
+        margin-bottom: 40px;
+      }
+
+      .test-description {
+        margin-bottom: 5px;
+        font-style: italic;
+        color: #666;
+      }
+
+      .test-context {
+        background-color: #f0f8ff;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CurrencyMan Regex Test Cases</h1>
+
+    <div class="controls">
+      <h2>Current Regex Pattern</h2>
+      <textarea id="regex-input" rows="4"></textarea>
+      <button id="update-regex">Update Regex</button>
+      <button id="run-tests">Run All Tests</button>
+      <button id="show-matches">Show Matches</button>
+    </div>
+
+    <div class="test-section">
+      <h2>Basic Currency Formats</h2>
+
+      <div class="test-group">
+        <h3>Symbol Before Number</h3>
+
+        <div class="test-case">
+          <div class="test-description">Simple dollar amount</div>
+          <div class="test-input">$10.99</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "$10.99" with currency code "USD" and value 10.99
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Euro with space</div>
+          <div class="test-input">€ 15.50</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "€ 15.50" with currency code "EUR" and value 15.50
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Pound without decimal</div>
+          <div class="test-input">£20</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "£20" with currency code "GBP" and value 20
+          </div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Symbol After Number</h3>
+
+        <div class="test-case">
+          <div class="test-description">Dollar after number</div>
+          <div class="test-input">10.99$</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "10.99$" with currency code "USD" and value 10.99
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Euro after with space</div>
+          <div class="test-input">15.50 €</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "15.50 €" with currency code "EUR" and value 15.50
+          </div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Currency Code Before Number</h3>
+
+        <div class="test-case">
+          <div class="test-description">USD code</div>
+          <div class="test-input">USD 45.99</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "USD 45.99" with currency code "USD" and value 45.99
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">EUR code without decimal</div>
+          <div class="test-input">EUR 50</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "EUR 50" with currency code "EUR" and value 50
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">EUR code with no space</div>
+          <div class="test-input">EUR50</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "EUR50" with currency code "EUR" and value 50
+          </div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Currency Code After Number</h3>
+
+        <div class="test-case">
+          <div class="test-description">USD after number</div>
+          <div class="test-input">45.99 USD</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "45.99 USD" with currency code "USD" and value 45.99
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">EUR after without space</div>
+          <div class="test-input">50EUR</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "50EUR" with currency code "EUR" and value 50
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Number Format Variations</h2>
+
+      <div class="test-group">
+        <h3>Thousands Separators</h3>
+
+        <div class="test-case">
+          <div class="test-description">Comma as thousands separator</div>
+          <div class="test-input">$1,000.00</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "$1,000.00" with currency code "USD" and value
+            1000.00
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Multiple thousands separators</div>
+          <div class="test-input">€1,000,000.50</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "€1,000,000.50" with currency code "EUR" and value
+            1000000.50
+          </div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Decimal Variations</h3>
+
+        <div class="test-case">
+          <div class="test-description">No decimal places</div>
+          <div class="test-input">JPY 5000</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "JPY 5000" with currency code "JPY" and value 5000
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">One decimal place</div>
+          <div class="test-input">$99.5</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "$99.5" with currency code "USD" and value 99.5
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Multiple decimal places</div>
+          <div class="test-input">BTC 0.00123456</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "BTC 0.00123456" with currency code "BTC" and value
+            0.00123456
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Context-Specific Cases</h2>
+
+      <div class="test-group">
+        <h3>E-commerce Checkout</h3>
+
+        <div class="test-case">
+          <div class="test-description">Subtotal line</div>
+          <div class="test-context">SUBTOTAL</div>
+          <div class="test-input">EUR 179.00</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "EUR 179.00" with currency code "EUR" and value
+            179.00
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Total line</div>
+          <div class="test-context">TOTAL</div>
+          <div class="test-input">EUR 179.00</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "EUR 179.00" with currency code "EUR" and value
+            179.00
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Price with currency after</div>
+          <div class="test-context">Price:</div>
+          <div class="test-input">199.99 USD</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "199.99 USD" with currency code "USD" and value
+            199.99
+          </div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Product Listings</h3>
+
+        <div class="test-case">
+          <div class="test-description">Price range</div>
+          <div class="test-input">$10 - $20</div>
+          <div class="test-result"></div>
+          <div class="expected">Expected: Match "$10" and "$20" separately</div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Sale price</div>
+          <div class="test-input">Was: $50.00 Now: $39.99</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "$50.00" and "$39.99" separately
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Price with discount percentage</div>
+          <div class="test-input">€99.99 (20% off)</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "€99.99" with currency code "EUR" and value 99.99
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Edge Cases</h2>
+
+      <div class="test-group">
+        <h3>Ambiguous Symbols</h3>
+
+        <div class="test-case">
+          <div class="test-description">Dollar sign in programming context</div>
+          <div class="test-input">
+            const $element = document.getElementById('price');
+          </div>
+          <div class="test-result"></div>
+          <div class="expected">Expected: No match (false positive)</div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Currency in URL</div>
+          <div class="test-input">
+            https://example.com/products?currency=USD&amount=50
+          </div>
+          <div class="test-result"></div>
+          <div class="expected">Expected: No match (false positive)</div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Mixed Content</h3>
+
+        <div class="test-case">
+          <div class="test-description">Currency in sentence</div>
+          <div class="test-input">The product costs $19.99 plus shipping.</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "$19.99" with currency code "USD" and value 19.99
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Multiple currencies in text</div>
+          <div class="test-input">Convert $100 USD to €92 EUR or £79 GBP</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "$100 USD", "€92 EUR", and "£79 GBP" separately
+          </div>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>Special Formatting</h3>
+
+        <div class="test-case">
+          <div class="test-description">Negative amount</div>
+          <div class="test-input">-$50.00</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "-$50.00" with currency code "USD" and value -50.00
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Parentheses for negative</div>
+          <div class="test-input">($25.99)</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "($25.99)" with currency code "USD" and value -25.99
+          </div>
+        </div>
+
+        <div class="test-case">
+          <div class="test-description">Currency with HTML formatting</div>
+          <div class="test-input">&lt;strong&gt;€99.99&lt;/strong&gt;</div>
+          <div class="test-result"></div>
+          <div class="expected">
+            Expected: Match "€99.99" with currency code "EUR" and value 99.99
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Current regex pattern from the extension
+      const initialRegexPattern = `(${[
+        "\\$",
+        "€",
+        "£",
+        "¥",
+        "₹",
+        "₽",
+        "₩",
+        "฿",
+        "R\\$",
+        "zł",
+        "₪",
+        "₺",
+        "₱",
+        "₫",
+        "₴",
+        "A\\$",
+        "C\\$",
+        "HK\\$",
+        "Fr",
+        "₿",
+        "Ξ",
+        "Ł",
+        "Ð",
+        "₮",
+      ].join("|")}|${[
+        "USD",
+        "EUR",
+        "GBP",
+        "JPY",
+        "INR",
+        "CNY",
+        "AUD",
+        "CAD",
+        "CHF",
+        "HKD",
+        "SGD",
+        "NZD",
+        "ZAR",
+        "RUB",
+        "KRW",
+        "THB",
+        "MXN",
+        "BRL",
+        "PLN",
+        "SEK",
+        "NOK",
+        "DKK",
+        "ILS",
+        "TRY",
+        "PHP",
+        "IDR",
+        "MYR",
+        "CZK",
+        "HUF",
+        "CLP",
+        "TWD",
+        "ARS",
+        "COP",
+        "PEN",
+        "VND",
+        "UAH",
+        "EGP",
+        "CRC",
+        "QAR",
+        "NGN",
+        "MAD",
+        "KWD",
+        "BHD",
+        "OMR",
+        "JOD",
+        "DZD",
+        "TND",
+        "LBP",
+        "PKR",
+        "BDT",
+        "KES",
+        "GHS",
+        "UGX",
+        "TZS",
+        "RWF",
+        "ETB",
+        "XAF",
+        "XOF",
+        "XPF",
+        "BTC",
+        "ETH",
+        "LTC",
+        "XRP",
+        "DOGE",
+        "USDT",
+        "BNB",
+        "SOL",
+        "ADA",
+        "DOT",
+        "TRX",
+      ].join("|")})\\s*([\\d,]+(\\.[\\d]+)?)|([\\d,]+(\\.[\\d]+)?)\\s*(${[
+        "\\$",
+        "€",
+        "£",
+        "¥",
+        "₹",
+        "₽",
+        "₩",
+        "฿",
+        "R\\$",
+        "zł",
+        "₪",
+        "₺",
+        "₱",
+        "₫",
+        "₴",
+        "A\\$",
+        "C\\$",
+        "HK\\$",
+        "Fr",
+        "₿",
+        "Ξ",
+        "Ł",
+        "Ð",
+        "₮",
+      ].join("|")}|${[
+        "USD",
+        "EUR",
+        "GBP",
+        "JPY",
+        "INR",
+        "CNY",
+        "AUD",
+        "CAD",
+        "CHF",
+        "HKD",
+        "SGD",
+        "NZD",
+        "ZAR",
+        "RUB",
+        "KRW",
+        "THB",
+        "MXN",
+        "BRL",
+        "PLN",
+        "SEK",
+        "NOK",
+        "DKK",
+        "ILS",
+        "TRY",
+        "PHP",
+        "IDR",
+        "MYR",
+        "CZK",
+        "HUF",
+        "CLP",
+        "TWD",
+        "ARS",
+        "COP",
+        "PEN",
+        "VND",
+        "UAH",
+        "EGP",
+        "CRC",
+        "QAR",
+        "NGN",
+        "MAD",
+        "KWD",
+        "BHD",
+        "OMR",
+        "JOD",
+        "DZD",
+        "TND",
+        "LBP",
+        "PKR",
+        "BDT",
+        "KES",
+        "GHS",
+        "UGX",
+        "TZS",
+        "RWF",
+        "ETB",
+        "XAF",
+        "XOF",
+        "XPF",
+        "BTC",
+        "ETH",
+        "LTC",
+        "XRP",
+        "DOGE",
+        "USDT",
+        "BNB",
+        "SOL",
+        "ADA",
+        "DOT",
+        "TRX",
+      ].join("|")})`;
+
+      // Set initial regex pattern
+      document.getElementById("regex-input").value = initialRegexPattern;
+
+      // Current regex pattern
+      let currentRegexPattern = initialRegexPattern;
+      let currentRegex = new RegExp(currentRegexPattern, "gi");
+
+      // Currency symbols and codes mapping
+      const CURRENCY_SYMBOLS = {
+        USD: "$",
+        EUR: "€",
+        GBP: "£",
+        JPY: "¥",
+        INR: "₹",
+        CNY: "¥",
+        AUD: "A$",
+        CAD: "C$",
+        CHF: "Fr",
+        HKD: "HK$",
+        SGD: "S$",
+        NZD: "NZ$",
+        ZAR: "R",
+        RUB: "₽",
+        KRW: "₩",
+        THB: "฿",
+        MXN: "Mex$",
+        BRL: "R$",
+        PLN: "zł",
+        SEK: "kr",
+        NOK: "kr",
+        DKK: "kr",
+        ILS: "₪",
+        TRY: "₺",
+        PHP: "₱",
+        IDR: "Rp",
+        MYR: "RM",
+        CZK: "Kč",
+        HUF: "Ft",
+        CLP: "CLP$",
+        TWD: "NT$",
+        ARS: "$",
+        COP: "COL$",
+        PEN: "S/",
+        VND: "₫",
+        UAH: "₴",
+        EGP: "E£",
+        BTC: "₿",
+        ETH: "Ξ",
+        LTC: "Ł",
+        DOGE: "Ð",
+        USDT: "₮",
+      };
+
+      // Function to get currency code from symbol or code
+      function getCurrencyCode(text) {
+        text = text.trim().toUpperCase();
+
+        // If it's already a currency code
+        if (Object.keys(CURRENCY_SYMBOLS).includes(text)) {
+          return text;
+        }
+
+        // Find the currency code for the symbol
+        for (const [code, symbol] of Object.entries(CURRENCY_SYMBOLS)) {
+          if (text === symbol) {
+            return code;
+          }
+        }
+
+        // Default to USD if we can't determine the currency
+        return "USD";
+      }
+
+      // Function to run tests
+      function runTests() {
+        const testCases = document.querySelectorAll(".test-case");
+
+        testCases.forEach((testCase) => {
+          const inputElement = testCase.querySelector(".test-input");
+          const resultElement = testCase.querySelector(".test-result");
+          const input = inputElement.textContent;
+
+          // Reset regex lastIndex
+          currentRegex.lastIndex = 0;
+
+          // Find matches
+          const matches = [...input.matchAll(currentRegex)];
+
+          if (matches.length > 0) {
+            let resultHTML = '<span class="pass">PASS</span><br>';
+
+            matches.forEach((match) => {
+              let currencyCode, value;
+
+              if (match[1] && match[2]) {
+                // Format: $10, EUR 100
+                currencyCode = getCurrencyCode(match[1]);
+                value = parseFloat(match[2].replace(/,/g, ""));
+              } else if (match[4] && match[6]) {
+                // Format: 10$, 100 EUR
+                currencyCode = getCurrencyCode(match[6]);
+                value = parseFloat(match[4].replace(/,/g, ""));
+              }
+
+              resultHTML += `Matched: "${match[0]}"<br>`;
+              resultHTML += `Currency Code: ${currencyCode}<br>`;
+              resultHTML += `Value: ${value}<br>`;
+
+              // Add debug info
+              resultHTML += `<div class="debug-info">`;
+              resultHTML += `Groups:<br>`;
+              for (let i = 0; i < match.length; i++) {
+                if (match[i] !== undefined) {
+                  resultHTML += `[${i}]: "${match[i]}"<br>`;
+                }
+              }
+              resultHTML += `</div>`;
+            });
+
+            resultElement.innerHTML = resultHTML;
+          } else {
+            resultElement.innerHTML =
+              '<span class="fail">FAIL</span><br>No matches found';
+          }
+        });
+      }
+
+      // Function to show matches in the input text
+      function showMatches() {
+        const testCases = document.querySelectorAll(".test-case");
+
+        testCases.forEach((testCase) => {
+          const inputElement = testCase.querySelector(".test-input");
+          const input = inputElement.textContent;
+
+          // Reset regex lastIndex
+          currentRegex.lastIndex = 0;
+
+          // Find matches
+          const matches = [...input.matchAll(currentRegex)];
+
+          if (matches.length > 0) {
+            let highlightedText = input;
+
+            // Replace matches with highlighted versions (starting from the end to avoid index issues)
+            for (let i = matches.length - 1; i >= 0; i--) {
+              const match = matches[i];
+              const start = match.index;
+              const end = start + match[0].length;
+
+              highlightedText =
+                highlightedText.substring(0, start) +
+                `<span class="highlight">${highlightedText.substring(
+                  start,
+                  end
+                )}</span>` +
+                highlightedText.substring(end);
+            }
+
+            inputElement.innerHTML = highlightedText;
+          }
+        });
+      }
+
+      // Function to update regex pattern
+      function updateRegex() {
+        const regexInput = document.getElementById("regex-input");
+        currentRegexPattern = regexInput.value;
+
+        try {
+          currentRegex = new RegExp(currentRegexPattern, "gi");
+          alert("Regex pattern updated successfully!");
+        } catch (error) {
+          alert("Invalid regex pattern: " + error.message);
+        }
+      }
+
+      // Event listeners
+      document.getElementById("run-tests").addEventListener("click", runTests);
+      document
+        .getElementById("show-matches")
+        .addEventListener("click", showMatches);
+      document
+        .getElementById("update-regex")
+        .addEventListener("click", updateRegex);
+
+      // Run tests on page load
+      document.addEventListener("DOMContentLoaded", runTests);
+    </script>
+  </body>
+</html>
