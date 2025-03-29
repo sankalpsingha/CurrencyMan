@@ -51,10 +51,48 @@
         border-radius: 8px;
         margin-top: 30px;
       }
+
+      .drop-zone {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        margin: 20px 0;
+        transition: all 0.3s ease;
+      }
+
+      .drop-zone.active {
+        border-color: #4285f4;
+        background-color: rgba(66, 133, 244, 0.1);
+      }
+
+      .drop-zone p {
+        margin: 0;
+        font-size: 16px;
+        color: #666;
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .browse-btn {
+        color: #4285f4;
+        cursor: pointer;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <h1>CurrencyMan Icon Generator</h1>
+
+    <div class="drop-zone" id="dropZone">
+      <p>
+        Drag & drop a PNG image here or
+        <span class="browse-btn" id="browseBtn">browse</span>
+      </p>
+      <input type="file" class="file-input" id="fileInput" accept="image/png" />
+    </div>
 
     <div class="canvas-container">
       <div class="canvas-wrapper">
@@ -76,22 +114,35 @@
       </div>
     </div>
 
-    <button class="download-all" id="generateAll">Generate All Icons</button>
+    <button class="download-all" id="generateAll">
+      Generate Default Icons
+    </button>
 
     <div class="instructions">
       <h2>Instructions:</h2>
       <ol>
-        <li>Click the "Generate All Icons" button to create the icons</li>
+        <li>
+          Drag and drop a PNG image onto the drop zone, or click "browse" to
+          select a file
+        </li>
+        <li>
+          The image will be automatically resized to create icons in different
+          sizes
+        </li>
         <li>Download each icon by clicking the "Download" links</li>
         <li>
           Save the icons to the "icons" folder in your extension directory
+        </li>
+        <li>
+          Alternatively, click "Generate Default Icons" to create the default
+          CurrencyMan icons
         </li>
       </ol>
     </div>
 
     <script>
-      // Function to draw the icon on a canvas
-      function drawIcon(canvas, size) {
+      // Function to draw the default icon on a canvas
+      function drawDefaultIcon(canvas, size) {
         const ctx = canvas.getContext("2d");
 
         // Clear canvas
@@ -134,14 +185,110 @@
         downloadLink.href = canvas.toDataURL("image/png");
       }
 
-      // Generate all icons
+      // Function to draw a custom image on a canvas
+      function drawCustomIcon(canvas, size, imageSource) {
+        const ctx = canvas.getContext("2d");
+
+        // Clear canvas
+        ctx.clearRect(0, 0, size, size);
+
+        // Draw the image, scaled to fit the canvas
+        ctx.drawImage(imageSource, 0, 0, size, size);
+
+        // Update download link
+        const downloadLink = document.getElementById(`download${size}`);
+        downloadLink.href = canvas.toDataURL("image/png");
+      }
+
+      // Generate all default icons
       document
         .getElementById("generateAll")
         .addEventListener("click", function () {
-          drawIcon(document.getElementById("icon16"), 16);
-          drawIcon(document.getElementById("icon48"), 48);
-          drawIcon(document.getElementById("icon128"), 128);
+          drawDefaultIcon(document.getElementById("icon16"), 16);
+          drawDefaultIcon(document.getElementById("icon48"), 48);
+          drawDefaultIcon(document.getElementById("icon128"), 128);
         });
+
+      // Set up drag and drop functionality
+      const dropZone = document.getElementById("dropZone");
+      const fileInput = document.getElementById("fileInput");
+      const browseBtn = document.getElementById("browseBtn");
+
+      // Handle browse button click
+      browseBtn.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      // Handle file selection via input
+      fileInput.addEventListener("change", function (e) {
+        if (fileInput.files.length) {
+          handleFile(fileInput.files[0]);
+        }
+      });
+
+      // Prevent default drag behaviors
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+      });
+
+      // Highlight drop zone when dragging over it
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+
+      // Handle dropped files
+      dropZone.addEventListener("drop", handleDrop, false);
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function highlight() {
+        dropZone.classList.add("active");
+      }
+
+      function unhighlight() {
+        dropZone.classList.remove("active");
+      }
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length && files[0].type === "image/png") {
+          handleFile(files[0]);
+        } else {
+          alert("Please drop a PNG image file.");
+        }
+      }
+
+      function handleFile(file) {
+        if (file.type !== "image/png") {
+          alert("Please select a PNG image file.");
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const img = new Image();
+          img.onload = function () {
+            // Generate icons from the uploaded image
+            drawCustomIcon(document.getElementById("icon16"), 16, img);
+            drawCustomIcon(document.getElementById("icon48"), 48, img);
+            drawCustomIcon(document.getElementById("icon128"), 128, img);
+          };
+          img.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
     </script>
   </body>
 </html>

@@ -245,7 +245,19 @@ function showConversionPopup(fromCurrency, amount, selection) {
   convertCurrency(fromCurrency, targetCurrency, amount)
     .then(convertedValue => {
       if (popup.parentNode) { // Check if popup still exists
-        popup.textContent = `${amount} ${fromCurrency} = ${convertedValue.toFixed(2)} ${targetCurrency}`;
+        // Format the original amount using proper locale and currency formatting
+        const formattedOriginalAmount = amount.toLocaleString(getLocaleForCurrency(fromCurrency), {
+          style: 'currency',
+          currency: fromCurrency
+        });
+        
+        // Format the converted amount using proper locale and currency formatting
+        const formattedConvertedValue = convertedValue.toLocaleString(getLocaleForCurrency(targetCurrency), {
+          style: 'currency',
+          currency: targetCurrency
+        });
+        
+        popup.textContent = `${formattedOriginalAmount} = ${formattedConvertedValue}`;
         popup.appendChild(closeButton); // Re-add the close button
       }
     })
@@ -329,6 +341,77 @@ async function getCachedRate(fromCurrency, toCurrency) {
       }
     });
   });
+}
+
+// Get locale for currency
+function getLocaleForCurrency(currencyCode) {
+  // Map of currency codes to their most common locales
+  const currencyLocaleMap = {
+    'USD': 'en-US',
+    'EUR': 'de-DE',
+    'GBP': 'en-GB',
+    'JPY': 'ja-JP',
+    'CNY': 'zh-CN',
+    'INR': 'en-IN',
+    'AUD': 'en-AU',
+    'CAD': 'en-CA',
+    'CHF': 'de-CH',
+    'HKD': 'zh-HK',
+    'SGD': 'zh-SG',
+    'NZD': 'en-NZ',
+    'ZAR': 'en-ZA',
+    'RUB': 'ru-RU',
+    'KRW': 'ko-KR',
+    'THB': 'th-TH',
+    'MXN': 'es-MX',
+    'BRL': 'pt-BR',
+    'PLN': 'pl-PL',
+    'SEK': 'sv-SE',
+    'NOK': 'no-NO',
+    'DKK': 'da-DK',
+    'ILS': 'he-IL',
+    'TRY': 'tr-TR',
+    'SAR': 'ar-SA',
+    'AED': 'ar-AE',
+    'PHP': 'en-PH',
+    'CZK': 'cs-CZ',
+    'IDR': 'id-ID',
+    'MYR': 'ms-MY',
+    'HUF': 'hu-HU',
+    'CLP': 'es-CL',
+    'TWD': 'zh-TW',
+    'ARS': 'es-AR',
+    'COP': 'es-CO',
+    'PEN': 'es-PE',
+    'VND': 'vi-VN',
+    'UAH': 'uk-UA',
+    'EGP': 'ar-EG',
+    'CRC': 'es-CR',
+    'QAR': 'ar-QA',
+    'NGN': 'en-NG',
+    'MAD': 'ar-MA',
+    'KWD': 'ar-KW',
+    'BHD': 'ar-BH',
+    'OMR': 'ar-OM',
+    'JOD': 'ar-JO',
+    'DZD': 'ar-DZ',
+    'TND': 'ar-TN',
+    'LBP': 'ar-LB',
+    'PKR': 'ur-PK',
+    'BDT': 'bn-BD',
+    'KES': 'sw-KE',
+    'GHS': 'en-GH',
+    'UGX': 'en-UG',
+    'TZS': 'sw-TZ',
+    'RWF': 'rw-RW',
+    'ETB': 'am-ET',
+    'XAF': 'fr-CM',
+    'XOF': 'fr-SN',
+    'XPF': 'fr-PF'
+  };
+  
+  // Return the locale for the currency code, or default to 'en-US' if not found
+  return currencyLocaleMap[currencyCode] || 'en-US';
 }
 
 // Cache exchange rate
