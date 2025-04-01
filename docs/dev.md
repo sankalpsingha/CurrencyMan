@@ -545,7 +545,7 @@ The extension is built using Manifest V3 and modern JavaScript features, making 
 1. **Content Security**: The extension only modifies the DOM appearance, not the underlying content
 2. **API Security**: Uses HTTPS for all API requests
 3. **Data Privacy**: All data is stored locally, no user data is sent to external servers
-4. **Permission Scope**: Uses minimal permissions (storage and activeTab)
+4. **Permission Scope**: Uses minimal permissions (storage and activeTab) to respect user privacy
 
 ## Testing
 
@@ -555,11 +555,82 @@ The extension includes several testing tools:
 2. **api-test.html**: Tool to test the currency API directly
 3. **supported-formats.html**: Documentation of all supported currency formats
 
+For detailed instructions on testing the extension during development with unminified code, see [TESTING.md](TESTING.md).
+
+## Domain-Specific Currency Settings
+
+The extension now supports domain-specific currency settings, allowing users to specify which currency should be used for specific websites. This feature addresses the issue where currency symbols like "$" are ambiguous and could represent different currencies (e.g., USD, CAD, AUD) depending on the website.
+
+### Problem Solved
+
+Without domain-specific settings, the extension would always interpret "$" as USD, even on websites like amazon.ca where "$" represents CAD. This led to incorrect conversions when the actual currency was different from the assumed one.
+
+### Implementation Details
+
+1. **Storage Structure**: Domain mappings are stored in Chrome's local storage:
+   ```javascript
+   {
+     targetCurrency: "USD",
+     domainMappings: {
+       "amazon.ca": "CAD",
+       "amazon.co.uk": "GBP",
+       // more mappings...
+     }
+   }
+   ```
+
+2. **UI for Managing Mappings**: The popup UI includes a new section for managing domain mappings:
+   - A table displaying existing domain-currency mappings
+   - Form inputs for adding new mappings
+   - "Use Current" button to automatically fill in the current website's domain
+   - Delete buttons for removing mappings
+
+3. **Domain Detection**: The content script gets the current domain and checks if there's a mapping for it:
+   ```javascript
+   const currentDomain = window.location.hostname;
+   ```
+
+4. **Currency Detection Override**: When a currency symbol is detected, the extension checks if there's a domain-specific mapping:
+   ```javascript
+   // Check if we have a domain-specific mapping for this symbol
+   if (text === '$' && domainMappings[currentDomain]) {
+     console.log(`Using domain-specific currency for ${currentDomain}: ${domainMappings[currentDomain]}`);
+     return domainMappings[currentDomain];
+   }
+   ```
+
+5. **Real-time Updates**: Changes to domain mappings are saved to storage immediately:
+   - When adding a new mapping, it's saved to storage right away
+   - When removing a mapping, it's deleted from storage right away
+   - The content script listens for storage changes and updates its behavior accordingly
+
+### Usage
+
+1. **Adding a Domain Mapping**:
+   - Open the extension popup
+   - In the "Domain-Specific Currency Settings" section, enter a domain (e.g., "amazon.ca")
+   - Select the currency to use for that domain (e.g., "CAD")
+   - Click "Add Domain Mapping"
+
+2. **Using the Current Website's Domain**:
+   - Open the extension popup while on the website you want to add
+   - Click the "Use Current" button next to the domain input field
+   - The domain will be automatically filled in, and the extension will attempt to guess the appropriate currency based on the domain's TLD
+   - Click "Add Domain Mapping" to save the mapping
+
+3. **Removing a Domain Mapping**:
+   - Open the extension popup
+   - In the domain mappings table, click the delete button next to the mapping you want to remove
+
+4. **Automatic Application**:
+   - When visiting a website with a configured domain mapping, the extension will automatically use the specified currency for detection
+   - No additional user action is required after setting up the mapping
+
 ## Future Enhancements
 
 1. **Offline Mode**: Add support for working without an internet connection
-2. **Custom Formats**: Allow users to define custom currency formats
-3. **Context Menu**: Add right-click options for currency conversion
-4. **Keyboard Shortcut**: Add keyboard shortcut for quick conversion
-5. **Historical Rates**: Support for historical exchange rates
-6. **Multiple Currencies**: Convert to multiple target currencies at once
+2. **Context Menu**: Add right-click options for currency conversion
+3. **Keyboard Shortcut**: Add keyboard shortcut for quick conversion
+4. **Historical Rates**: Support for historical exchange rates
+5. **Multiple Currencies**: Convert to multiple target currencies at once
+6. **Enhanced Domain Mappings**: Support for pattern matching in domain mappings (e.g., *.amazon.*)

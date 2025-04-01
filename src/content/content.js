@@ -79,15 +79,21 @@ const CURRENCY_SYMBOLS = {
 const CURRENCY_CODES = Object.keys(CURRENCY_SYMBOLS);
 const SYMBOLS = Object.values(CURRENCY_SYMBOLS);
 
-// Store user's preferred currency
+// Store user's preferred currency and domain mappings
 let targetCurrency = 'USD';
+let domainMappings = {};
+let currentDomain = window.location.hostname;
 
 // Initialize the extension
 function init() {
-  // Get user's preferred currency from storage
-  chrome.storage.local.get(['targetCurrency'], function(result) {
+  // Get user's preferred currency and domain mappings from storage
+  chrome.storage.local.get(['targetCurrency', 'domainMappings'], function(result) {
     if (result.targetCurrency) {
       targetCurrency = result.targetCurrency;
+    }
+    
+    if (result.domainMappings) {
+      domainMappings = result.domainMappings;
     }
     
     // Set up the selection handler
@@ -98,6 +104,10 @@ function init() {
   chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.targetCurrency) {
       targetCurrency = changes.targetCurrency.newValue;
+    }
+    
+    if (changes.domainMappings) {
+      domainMappings = changes.domainMappings.newValue;
     }
   });
 }
@@ -185,6 +195,11 @@ function getCurrencyCode(text) {
   // Find the currency code for the symbol
   for (const [code, symbol] of Object.entries(CURRENCY_SYMBOLS)) {
     if (text === symbol) {
+      // Check if we have a domain-specific mapping for this symbol
+      if (text === '$' && domainMappings[currentDomain]) {
+        console.log(`Using domain-specific currency for ${currentDomain}: ${domainMappings[currentDomain]}`);
+        return domainMappings[currentDomain];
+      }
       return code;
     }
   }

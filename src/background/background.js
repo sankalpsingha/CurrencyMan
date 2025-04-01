@@ -2,15 +2,26 @@
 
 // Default settings
 const DEFAULT_SETTINGS = {
-  targetCurrency: 'USD'
+  targetCurrency: 'USD',
+  domainMappings: {}
 };
 
 // Initialize extension settings
 chrome.runtime.onInstalled.addListener(() => {
   // Set default settings
-  chrome.storage.local.get(['targetCurrency'], function(result) {
+  chrome.storage.local.get(['targetCurrency', 'domainMappings'], function(result) {
+    const settings = {};
+    
     if (!result.targetCurrency) {
-      chrome.storage.local.set(DEFAULT_SETTINGS);
+      settings.targetCurrency = DEFAULT_SETTINGS.targetCurrency;
+    }
+    
+    if (!result.domainMappings) {
+      settings.domainMappings = DEFAULT_SETTINGS.domainMappings;
+    }
+    
+    if (Object.keys(settings).length > 0) {
+      chrome.storage.local.set(settings);
     }
   });
   

@@ -295,6 +295,110 @@
       </div>
     </div>
 
+    <div class="section">
+      <h2 class="section-title">Domain-Specific Currency Settings</h2>
+      <p style="font-size: 13px; color: #666; margin-bottom: 15px">
+        Configure specific currencies for websites where the default detection
+        might be incorrect. For example, set amazon.ca to use CAD instead of
+        USD.
+      </p>
+
+      <div
+        id="domainMappingsContainer"
+        style="margin-bottom: 15px; max-height: 150px; overflow-y: auto"
+      >
+        <table
+          id="domainMappingsTable"
+          style="width: 100%; border-collapse: collapse; font-size: 13px"
+        >
+          <thead>
+            <tr>
+              <th
+                style="
+                  text-align: left;
+                  padding: 8px 4px;
+                  border-bottom: 1px solid #ddd;
+                "
+              >
+                Domain
+              </th>
+              <th
+                style="
+                  text-align: left;
+                  padding: 8px 4px;
+                  border-bottom: 1px solid #ddd;
+                "
+              >
+                Currency
+              </th>
+              <th
+                style="
+                  width: 40px;
+                  text-align: center;
+                  padding: 8px 4px;
+                  border-bottom: 1px solid #ddd;
+                "
+              >
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody id="domainMappingsList">
+            <!-- Domain mappings will be populated here -->
+            <tr id="noMappingsRow">
+              <td
+                colspan="3"
+                style="text-align: center; padding: 10px; color: #888"
+              >
+                No domain mappings added yet
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label for="domainInput">Domain:</label>
+        <div style="display: flex; gap: 8px">
+          <input
+            type="text"
+            id="domainInput"
+            placeholder="e.g., amazon.ca"
+            style="flex: 1"
+          />
+          <button
+            id="useCurrentDomainButton"
+            style="width: auto; padding: 8px; font-size: 12px"
+            title="Use current website domain"
+          >
+            Use Current
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="domainCurrency">Currency:</label>
+        <select id="domainCurrency">
+          <!-- Major Currencies -->
+          <option value="USD">US Dollar (USD)</option>
+          <option value="EUR">Euro (EUR)</option>
+          <option value="GBP">British Pound (GBP)</option>
+          <option value="JPY">Japanese Yen (JPY)</option>
+          <option value="CAD">Canadian Dollar (CAD)</option>
+          <option value="AUD">Australian Dollar (AUD)</option>
+          <option value="CHF">Swiss Franc (CHF)</option>
+          <option value="CNY">Chinese Yuan (CNY)</option>
+          <option value="INR">Indian Rupee (INR)</option>
+          <option value="HKD">Hong Kong Dollar (HKD)</option>
+          <!-- Add more currencies as needed -->
+        </select>
+      </div>
+
+      <button id="addDomainButton" style="margin-bottom: 10px">
+        Add Domain Mapping
+      </button>
+    </div>
+
     <style>
       /* Additional styles for the How to Use section */
       .steps-container {

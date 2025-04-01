@@ -8,7 +8,10 @@
     "watch": "webpack --watch --config webpack.config.js",
     "clean": "rimraf dist",
     "test": "mocha test/unit/regex-unit-tests.js",
-    "test:watch": "mocha --watch test/unit/regex-unit-tests.js"
+    "test:watch": "mocha --watch test/unit/regex-unit-tests.js",
+    "build:dev": "webpack --config webpack.dev.config.js",
+    "watch:dev": "webpack --watch --config webpack.dev.config.js",
+    "clean:dev": "rimraf dist-dev"
   },
   "keywords": [],
   "author": "",
