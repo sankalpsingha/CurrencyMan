@@ -228,31 +228,33 @@ function showConversionPopup(fromCurrency, amount, selection) {
   popup.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
   popup.style.zIndex = '9999';
   popup.style.fontSize = '14px';
+  popup.style.minWidth = '200px'; // Ensure minimum width for the popup
   
-    // Add close button
-    const closeButton = document.createElement('span');
-    closeButton.textContent = '×';
-    closeButton.style.position = 'absolute';
-    closeButton.style.top = '-3px';
-    closeButton.style.right = '0px';
-    closeButton.style.cursor = 'pointer';
-    closeButton.style.fontSize = '18px';
-    closeButton.style.fontWeight = 'bold';
-    closeButton.style.width = '10px';
-    closeButton.style.height = '10px';
-    closeButton.style.lineHeight = '18px';
-    closeButton.style.textAlign = 'center';
-    closeButton.style.borderRadius = '50%';
-    // closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-    closeButton.style.padding = '2px';
-    closeButton.addEventListener('click', () => popup.remove());
-    closeButton.addEventListener('mouseover', () => {
-      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
-    });
-    closeButton.addEventListener('mouseout', () => {
-      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-    });
-    popup.appendChild(closeButton);
+  // Add close button
+  const closeButton = document.createElement('span');
+  closeButton.textContent = '×';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '5px';
+  closeButton.style.right = '8px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.fontSize = '18px';
+  closeButton.style.fontWeight = 'bold';
+  closeButton.style.width = '18px';
+  closeButton.style.height = '18px';
+  closeButton.style.lineHeight = '18px';
+  closeButton.style.textAlign = 'center';
+  closeButton.style.borderRadius = '50%';
+  closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+  closeButton.style.padding = '0';
+  closeButton.style.zIndex = '10000'; // Ensure it's above other content
+  closeButton.addEventListener('click', () => popup.remove());
+  closeButton.addEventListener('mouseover', () => {
+    closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+  });
+  closeButton.addEventListener('mouseout', () => {
+    closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+  });
+  popup.appendChild(closeButton);
   
   document.body.appendChild(popup);
   
@@ -272,8 +274,29 @@ function showConversionPopup(fromCurrency, amount, selection) {
           currency: targetCurrency
         });
         
-        popup.textContent = `${formattedOriginalAmount} = ${formattedConvertedValue}`;
-        popup.appendChild(closeButton); // Re-add the close button
+        // Create the main content
+        popup.textContent = '';
+        
+        // Check if we're using a domain-specific mapping for this domain
+        if (domainMappings[currentDomain] && fromCurrency === domainMappings[currentDomain]) {
+          const mappingBadge = document.createElement('div');
+          mappingBadge.textContent = `Using ${fromCurrency} for ${currentDomain}`;
+          mappingBadge.style.fontSize = '10px';
+          mappingBadge.style.color = '#8aff8a';
+          mappingBadge.style.marginBottom = '5px';
+          mappingBadge.style.fontStyle = 'italic';
+          popup.appendChild(mappingBadge);
+        }
+        
+        // Add the conversion text
+        const conversionText = document.createElement('div');
+        conversionText.textContent = `${formattedOriginalAmount} = ${formattedConvertedValue}`;
+        conversionText.style.fontWeight = 'bold';
+        conversionText.style.paddingRight = '20px'; // Add padding to prevent overlap with close button
+        popup.appendChild(conversionText);
+        
+        // Re-add the close button
+        popup.appendChild(closeButton);
       }
     })
     .catch(error => {

@@ -64,22 +64,11 @@ function updateDomainMappingsUI() {
     
     // Delete button cell
     const actionCell = document.createElement('td');
-    actionCell.style.padding = '8px 4px';
-    actionCell.style.borderBottom = '1px solid #eee';
     actionCell.style.textAlign = 'center';
     
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '×';
-    deleteButton.style.backgroundColor = '#f44336';
-    deleteButton.style.color = 'white';
-    deleteButton.style.border = 'none';
-    deleteButton.style.borderRadius = '4px';
-    deleteButton.style.width = '24px';
-    deleteButton.style.height = '24px';
-    deleteButton.style.cursor = 'pointer';
-    deleteButton.style.fontSize = '14px';
-    deleteButton.style.lineHeight = '1';
-    deleteButton.style.padding = '0';
+    deleteButton.className = 'delete-btn';
     deleteButton.title = 'Delete mapping';
     
     deleteButton.addEventListener('click', () => {
