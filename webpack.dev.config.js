@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const fs = require('fs');
 
 module.exports = {
   mode: 'development',
@@ -22,8 +23,13 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { 
-          from: 'manifest.json', 
-          to: '.' 
+          from: 'src/manifests/common.json',
+          to: 'manifest.json',
+          transform(content) {
+            const commonManifest = JSON.parse(content.toString());
+            const chromeManifest = JSON.parse(fs.readFileSync('src/manifests/chrome.json', 'utf8'));
+            return JSON.stringify({ ...commonManifest, ...chromeManifest }, null, 2);
+          }
         },
         { 
           from: 'src/popup/popup.html', 
