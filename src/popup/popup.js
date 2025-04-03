@@ -5,6 +5,8 @@ import browserAPI from '../utils/browser-polyfill.js';
 const targetCurrencySelect = document.getElementById('targetCurrency');
 const saveButton = document.getElementById('saveButton');
 const statusDiv = document.getElementById('status');
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
 const domainInput = document.getElementById('domainInput');
 const domainCurrency = document.getElementById('domainCurrency');
 const addDomainButton = document.getElementById('addDomainButton');
@@ -133,10 +135,32 @@ function showStatus(message, type) {
   statusDiv.className = `status ${type}`;
   statusDiv.style.display = 'block';
   
+  // Position at the top
+  statusDiv.style.marginTop = '0';
+  statusDiv.style.marginBottom = '15px';
+  
   // Hide message after 2 seconds
   setTimeout(function() {
     statusDiv.style.display = 'none';
   }, 2000);
+}
+
+// Tab functionality
+function setupTabs() {
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Get the tab to show from the data-tab attribute
+      const tabToShow = button.getAttribute('data-tab');
+      
+      // Remove active class from all buttons and tabs
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Add active class to the clicked button and corresponding tab
+      button.classList.add('active');
+      document.getElementById(tabToShow).classList.add('active');
+    });
+  });
 }
 
 // Save settings
@@ -220,7 +244,10 @@ function getCurrentDomain() {
 }
 
 // Add event listeners
-document.addEventListener('DOMContentLoaded', loadSettings);
+document.addEventListener('DOMContentLoaded', () => {
+  loadSettings();
+  setupTabs();
+});
 saveButton.addEventListener('click', saveSettings);
 addDomainButton.addEventListener('click', addDomainMapping);
 useCurrentDomainButton.addEventListener('click', getCurrentDomain);
