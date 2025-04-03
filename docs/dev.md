@@ -1,35 +1,55 @@
-# CurrencyMan Chrome Extension - Technical Documentation
+# CurrencyMan Browser Extension - Technical Documentation
 
 ## Overview
 
-CurrencyMan is a Chrome extension that allows users to convert currency values on webpages to their preferred local currency by selecting text. The extension supports over 150 currencies, including major fiat currencies and cryptocurrencies.
+CurrencyMan is a browser extension for Chrome and Firefox that allows users to convert currency values on webpages to their preferred local currency by selecting text. The extension supports over 150 currencies, including major fiat currencies and cryptocurrencies.
 
 ## Architecture
 
-The extension follows a standard Chrome extension architecture with the following components:
+The extension follows a standard browser extension architecture with the following components:
 
-1. **Manifest File**: Defines the extension's metadata, permissions, and component relationships
+1. **Manifest Files**: Define the extension's metadata, permissions, and component relationships
 2. **Content Script**: Runs in the context of web pages to detect and highlight currencies
 3. **Background Script**: Handles API requests, caching, and background tasks
 4. **Popup UI**: Provides a settings interface for user customization
 5. **Styles**: Defines the appearance of currency highlights and tooltips
+6. **Browser Polyfill**: Handles browser-specific API differences
+
+The extension uses a unified codebase with browser-specific adaptations:
+
+1. **Browser Detection**: Detects which browser is running the extension
+2. **API Polyfill**: Provides a unified API interface that works in both Chrome and Firefox
+3. **Manifest Splitting**: Uses separate manifest files for common settings and browser-specific settings
 
 ## Component Details
 
-### 1. Manifest (manifest.json)
+### 1. Manifest Files
+
+The extension uses three manifest files:
+
+#### Common Manifest (src/manifests/common.json)
 
 ```json
 {
-  "manifest_version": 3,
   "name": "CurrencyMan",
   "version": "1.0",
   "description": "Convert selected currency values on webpages to your local currency",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
     "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/*"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "content_scripts": [
     {
@@ -37,20 +57,47 @@ The extension follows a standard Chrome extension architecture with the followin
       "js": ["content.js"],
       "css": ["styles.css"]
     }
-  ],
+  ]
+}
+```
+
+#### Chrome Manifest (src/manifests/chrome.json)
+
+```json
+{
+  "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": ["https://cdn.jsdelivr.net/*"]
   }
 }
 ```
 
-- Uses Manifest V3 for modern Chrome extension capabilities
-- Requires `storage` permission for saving user preferences and caching exchange rates
-- Requires `activeTab` permission to access and modify the current webpage
-- Includes host permission for the currency API
-- Registers a content script that runs on all URLs
-- Defines a background service worker for handling API requests and caching
-- Specifies a popup UI for user settings
+#### Firefox Manifest (src/manifests/firefox.json)
+
+```json
+{
+  "manifest_version": 3,
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "currencyman@example.com",
+      "strict_min_version": "109.0"
+    }
+  },
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
+```
+
+Key differences between Chrome and Firefox manifests:
+- Chrome uses `service_worker` for background scripts, while Firefox uses `scripts` array
+- Firefox requires `browser_specific_settings` with a unique addon ID and minimum version
+- Chrome includes `externally_connectable` for API access
+
+During the build process, these manifest files are merged to create browser-specific manifests.
 
 ### 2. Content Script (content.js)
 
@@ -230,7 +277,7 @@ The content script is responsible for:
 
 - **Storage Integration**: Listens for changes in user preferences:
   ```javascript
-  chrome.storage.onChanged.addListener(function(changes, namespace) {
+  browserAPI.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.targetCurrency) {
       targetCurrency = changes.targetCurrency.newValue;
     }
@@ -254,11 +301,21 @@ The background script handles:
     targetCurrency: 'USD'
   };
 
-  chrome.runtime.onInstalled.addListener(() => {
+  browserAPI.runtime.onInstalled.addListener(() => {
     // Set default settings
-    chrome.storage.local.get(['targetCurrency'], function(result) {
+    browserAPI.storage.local.get(['targetCurrency', 'domainMappings']).then(result => {
+      const settings = {};
+      
       if (!result.targetCurrency) {
-        chrome.storage.local.set(DEFAULT_SETTINGS);
+        settings.targetCurrency = DEFAULT_SETTINGS.targetCurrency;
+      }
+      
+      if (!result.domainMappings) {
+        settings.domainMappings = DEFAULT_SETTINGS.domainMappings;
+      }
+      
+      if (Object.keys(settings).length > 0) {
+        browserAPI.storage.local.set(settings);
       }
     });
     
@@ -268,7 +325,7 @@ The background script handles:
 
 - **Message Handling**: Processes messages from the content script:
   ```javascript
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'convertCurrency') {
       const { fromCurrency, toCurrency, amount } = request;
       
@@ -397,10 +454,16 @@ The popup UI provides:
 - **Settings Loading**: Loads saved settings from storage:
   ```javascript
   function loadSettings() {
-    chrome.storage.local.get(['targetCurrency'], function(result) {
+    browserAPI.storage.local.get(['targetCurrency', 'domainMappings']).then(result => {
       // Set target currency
       if (result.targetCurrency) {
         targetCurrencySelect.value = result.targetCurrency;
+      }
+      
+      // Load domain mappings
+      if (result.domainMappings) {
+        domainMappings = result.domainMappings;
+        updateDomainMappingsUI();
       }
     });
   }
@@ -410,19 +473,13 @@ The popup UI provides:
   ```javascript
   function saveSettings() {
     const settings = {
-      targetCurrency: targetCurrencySelect.value
+      targetCurrency: targetCurrencySelect.value,
+      domainMappings: domainMappings
     };
     
-    chrome.storage.local.set(settings, function() {
+    browserAPI.storage.local.set(settings).then(() => {
       // Show success message
-      statusDiv.textContent = 'Settings saved!';
-      statusDiv.className = 'status success';
-      statusDiv.style.display = 'block';
-      
-      // Hide message after 2 seconds
-      setTimeout(function() {
-        statusDiv.style.display = 'none';
-      }, 2000);
+      showStatus('Settings saved!', 'success');
       
       // Prefetch rates for the new target currency
       prefetchRates(settings.targetCurrency);
@@ -531,11 +588,88 @@ The extension uses the free currency conversion API from:
 4. **Efficient Regex**: Uses optimized regex patterns for currency detection
 5. **Event Delegation**: Uses efficient event handling for selection and popup interactions
 
+### 6. Browser Polyfill (src/utils/browser-polyfill.js)
+
+The browser polyfill handles differences between Chrome and Firefox APIs:
+
+```javascript
+/**
+ * Browser API polyfill to handle differences between Chrome and Firefox
+ * 
+ * This utility detects the current browser and provides a unified API
+ * that works consistently across browsers.
+ */
+
+const getBrowserAPI = () => {
+  // Check if we're in Firefox (browser namespace exists)
+  if (typeof browser !== 'undefined') {
+    return browser;
+  }
+  
+  // We're in Chrome or another browser that uses the chrome namespace
+  if (typeof chrome !== 'undefined') {
+    // Create a simple polyfill for the APIs we use
+    const api = { ...chrome };
+    
+    // Add Promise wrappers for callback-based APIs
+    if (chrome.storage && chrome.storage.local) {
+      const originalGet = chrome.storage.local.get;
+      api.storage = api.storage || {};
+      api.storage.local = api.storage.local || {};
+      api.storage.local.get = (keys) => new Promise((resolve) => {
+        originalGet.call(chrome.storage.local, keys, resolve);
+      });
+      
+      const originalSet = chrome.storage.local.set;
+      api.storage.local.set = (items) => new Promise((resolve) => {
+        originalSet.call(chrome.storage.local, items, resolve);
+      });
+    }
+    
+    // Add more API wrappers as needed for runtime, etc.
+    if (chrome.runtime) {
+      const originalSendMessage = chrome.runtime.sendMessage;
+      api.runtime = api.runtime || {};
+      api.runtime.sendMessage = (message) => new Promise((resolve) => {
+        originalSendMessage.call(chrome.runtime, message, resolve);
+      });
+    }
+    
+    return api;
+  }
+  
+  // Fallback for environments where neither chrome nor browser is available
+  console.warn('No browser API found. Using mock implementation.');
+  return {
+    storage: {
+      local: {
+        get: () => Promise.resolve({}),
+        set: () => Promise.resolve()
+      }
+    },
+    runtime: {
+      sendMessage: () => Promise.resolve(),
+      onMessage: { addListener: () => {} }
+    }
+  };
+};
+
+export default getBrowserAPI();
+```
+
+Key features of the browser polyfill:
+- Detects which browser is running the extension
+- Returns the native `browser` API for Firefox
+- Creates a Promise-based wrapper around Chrome's callback-based APIs
+- Provides a unified API interface that works in both browsers
+- Includes a fallback implementation for testing environments
+
 ## Browser Compatibility
 
 The extension is built using Manifest V3 and modern JavaScript features, making it compatible with:
 
 - Chrome 88+
+- Firefox 109+ (with Manifest V3 support)
 - Edge 88+ (Chromium-based)
 - Opera 74+
 - Brave (latest versions)
@@ -626,6 +760,23 @@ Without domain-specific settings, the extension would always interpret "$" as US
    - When visiting a website with a configured domain mapping, the extension will automatically use the specified currency for detection
    - No additional user action is required after setting up the mapping
 
+## Build System
+
+The extension uses webpack to build separate distributions for Chrome and Firefox:
+
+1. **Manifest Merging**: During the build process, the common manifest is merged with browser-specific manifests
+2. **Output Directories**: 
+   - Chrome: `dist-chrome/`
+   - Firefox: `dist-firefox/`
+3. **Build Commands**:
+   - `npm run build:chrome`: Build for Chrome only
+   - `npm run build:firefox`: Build for Firefox only
+   - `npm run build:multi`: Build for both browsers
+4. **Watch Commands**:
+   - `npm run watch:chrome`: Watch for changes and rebuild for Chrome
+   - `npm run watch:firefox`: Watch for changes and rebuild for Firefox
+   - `npm run watch:multi`: Watch for changes and rebuild for both browsers
+
 ## Future Enhancements
 
 1. **Offline Mode**: Add support for working without an internet connection
@@ -634,3 +785,4 @@ Without domain-specific settings, the extension would always interpret "$" as US
 4. **Historical Rates**: Support for historical exchange rates
 5. **Multiple Currencies**: Convert to multiple target currencies at once
 6. **Enhanced Domain Mappings**: Support for pattern matching in domain mappings (e.g., *.amazon.*)
+7. **Additional Browser Support**: Add support for Safari and other browsers

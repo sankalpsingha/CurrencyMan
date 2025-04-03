@@ -1,3 +1,6 @@
+// Import browser polyfill
+import browserAPI from '../utils/browser-polyfill.js';
+
 // Get DOM elements
 const targetCurrencySelect = document.getElementById('targetCurrency');
 const saveButton = document.getElementById('saveButton');
@@ -14,7 +17,7 @@ let domainMappings = {};
 
 // Load saved settings
 function loadSettings() {
-  chrome.storage.local.get(['targetCurrency', 'domainMappings'], function(result) {
+  browserAPI.storage.local.get(['targetCurrency', 'domainMappings']).then(result => {
     // Set target currency
     if (result.targetCurrency) {
       targetCurrencySelect.value = result.targetCurrency;
@@ -100,7 +103,7 @@ function addDomainMapping() {
   updateDomainMappingsUI();
   
   // Save changes to storage immediately
-  chrome.storage.local.set({ domainMappings: domainMappings }, function() {
+  browserAPI.storage.local.set({ domainMappings: domainMappings }).then(() => {
     // Clear input
     domainInput.value = '';
     
@@ -118,7 +121,7 @@ function deleteDomainMapping(domain) {
   updateDomainMappingsUI();
   
   // Save changes to storage immediately
-  chrome.storage.local.set({ domainMappings: domainMappings }, function() {
+  browserAPI.storage.local.set({ domainMappings: domainMappings }).then(() => {
     // Show success message
     showStatus(`Removed mapping for ${domain}`, 'success');
   });
@@ -143,7 +146,7 @@ function saveSettings() {
     domainMappings: domainMappings
   };
   
-  chrome.storage.local.set(settings, function() {
+  browserAPI.storage.local.set(settings).then(() => {
     // Show success message
     showStatus('Settings saved!', 'success');
     
@@ -155,7 +158,7 @@ function saveSettings() {
 // Prefetch exchange rates for common currencies
 function prefetchRates(baseCurrency) {
   // This will trigger the background script to prefetch rates
-  chrome.runtime.sendMessage({
+  browserAPI.runtime.sendMessage({
     action: 'prefetchRates',
     currency: baseCurrency
   });
@@ -163,8 +166,8 @@ function prefetchRates(baseCurrency) {
 
 // Get current tab's domain (works with activeTab permission)
 function getCurrentDomain() {
-  // The chrome.tabs.query API works with activeTab permission when called from the popup
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+  // The tabs.query API works with activeTab permission when called from the popup
+  browserAPI.tabs.query({ active: true, currentWindow: true }).then(tabs => {
     if (tabs && tabs.length > 0) {
       const url = new URL(tabs[0].url);
       const domain = url.hostname;

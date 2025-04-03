@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": ["https://cdn.jsdelivr.net/*"]
+  }
+}

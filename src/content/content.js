@@ -1,3 +1,6 @@
+// Import browser polyfill
+import browserAPI from '../utils/browser-polyfill.js';
+
 // Currency regex patterns
 const CURRENCY_SYMBOLS = {
   // Major currency symbols
@@ -87,7 +90,7 @@ let currentDomain = window.location.hostname;
 // Initialize the extension
 function init() {
   // Get user's preferred currency and domain mappings from storage
-  chrome.storage.local.get(['targetCurrency', 'domainMappings'], function(result) {
+  browserAPI.storage.local.get(['targetCurrency', 'domainMappings']).then(result => {
     if (result.targetCurrency) {
       targetCurrency = result.targetCurrency;
     }
@@ -101,7 +104,7 @@ function init() {
   });
 
   // Listen for changes in storage
-  chrome.storage.onChanged.addListener(function(changes, namespace) {
+  browserAPI.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.targetCurrency) {
       targetCurrency = changes.targetCurrency.newValue;
     }
@@ -358,27 +361,23 @@ async function convertCurrency(fromCurrency, toCurrency, amount) {
 
 // Get cached exchange rate
 async function getCachedRate(fromCurrency, toCurrency) {
-  return new Promise(resolve => {
-    chrome.storage.local.get(['rates', 'ratesExpiry'], function(result) {
-      const now = Date.now();
-      const rates = result.rates || {};
-      const expiry = result.ratesExpiry || 0;
-      
-      // Check if cache is expired (24 hours)
-      if (now > expiry) {
-        resolve(null);
-        return;
-      }
-      
-      // Check if we have the rate cached
-      const fromRates = rates[fromCurrency.toLowerCase()];
-      if (fromRates && fromRates[toCurrency.toLowerCase()]) {
-        resolve(fromRates[toCurrency.toLowerCase()]);
-      } else {
-        resolve(null);
-      }
-    });
-  });
+  const result = await browserAPI.storage.local.get(['rates', 'ratesExpiry']);
+  const now = Date.now();
+  const rates = result.rates || {};
+  const expiry = result.ratesExpiry || 0;
+  
+  // Check if cache is expired (24 hours)
+  if (now > expiry) {
+    return null;
+  }
+  
+  // Check if we have the rate cached
+  const fromRates = rates[fromCurrency.toLowerCase()];
+  if (fromRates && fromRates[toCurrency.toLowerCase()]) {
+    return fromRates[toCurrency.toLowerCase()];
+  } else {
+    return null;
+  }
 }
 
 // Get locale for currency
@@ -454,27 +453,24 @@ function getLocaleForCurrency(currencyCode) {
 
 // Cache exchange rate
 async function cacheRate(fromCurrency, toCurrency, rate) {
-  return new Promise(resolve => {
-    chrome.storage.local.get(['rates'], function(result) {
-      const rates = result.rates || {};
-      
-      // Initialize currency object if it doesn't exist
-      if (!rates[fromCurrency.toLowerCase()]) {
-        rates[fromCurrency.toLowerCase()] = {};
-      }
-      
-      // Set the rate
-      rates[fromCurrency.toLowerCase()][toCurrency.toLowerCase()] = rate;
-      
-      // Set expiry to 24 hours from now
-      const expiry = Date.now() + (24 * 60 * 60 * 1000);
-      
-      // Save to storage
-      chrome.storage.local.set({
-        rates: rates,
-        ratesExpiry: expiry
-      }, resolve);
-    });
+  const result = await browserAPI.storage.local.get(['rates']);
+  const rates = result.rates || {};
+  
+  // Initialize currency object if it doesn't exist
+  if (!rates[fromCurrency.toLowerCase()]) {
+    rates[fromCurrency.toLowerCase()] = {};
+  }
+  
+  // Set the rate
+  rates[fromCurrency.toLowerCase()][toCurrency.toLowerCase()] = rate;
+  
+  // Set expiry to 24 hours from now
+  const expiry = Date.now() + (24 * 60 * 60 * 1000);
+  
+  // Save to storage
+  return browserAPI.storage.local.set({
+    rates: rates,
+    ratesExpiry: expiry
   });
 }
 

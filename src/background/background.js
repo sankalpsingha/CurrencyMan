@@ -1,4 +1,5 @@
 // Background script for CurrencyMan extension
+import browserAPI from '../utils/browser-polyfill.js';
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -7,9 +8,9 @@ const DEFAULT_SETTINGS = {
 };
 
 // Initialize extension settings
-chrome.runtime.onInstalled.addListener(() => {
+browserAPI.runtime.onInstalled.addListener(() => {
   // Set default settings
-  chrome.storage.local.get(['targetCurrency', 'domainMappings'], function(result) {
+  browserAPI.storage.local.get(['targetCurrency', 'domainMappings']).then(result => {
     const settings = {};
     
     if (!result.targetCurrency) {
@@ -21,7 +22,7 @@ chrome.runtime.onInstalled.addListener(() => {
     }
     
     if (Object.keys(settings).length > 0) {
-      chrome.storage.local.set(settings);
+      browserAPI.storage.local.set(settings);
     }
   });
   
@@ -29,7 +30,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Handle messages from content script
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'convertCurrency') {
     const { fromCurrency, toCurrency, amount } = request;
     
@@ -75,51 +76,46 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Get cached exchange rate
 function getCachedRate(fromCurrency, toCurrency) {
-  return new Promise(resolve => {
-    chrome.storage.local.get(['rates', 'ratesExpiry'], function(result) {
-      const now = Date.now();
-      const rates = result.rates || {};
-      const expiry = result.ratesExpiry || 0;
-      
-      // Check if cache is expired (24 hours)
-      if (now > expiry) {
-        resolve(null);
-        return;
-      }
-      
-      // Check if we have the rate cached
-      const fromRates = rates[fromCurrency.toLowerCase()];
-      if (fromRates && fromRates[toCurrency.toLowerCase()]) {
-        resolve(fromRates[toCurrency.toLowerCase()]);
-      } else {
-        resolve(null);
-      }
-    });
+  return browserAPI.storage.local.get(['rates', 'ratesExpiry']).then(result => {
+    const now = Date.now();
+    const rates = result.rates || {};
+    const expiry = result.ratesExpiry || 0;
+    
+    // Check if cache is expired (24 hours)
+    if (now > expiry) {
+      return null;
+    }
+    
+    // Check if we have the rate cached
+    const fromRates = rates[fromCurrency.toLowerCase()];
+    if (fromRates && fromRates[toCurrency.toLowerCase()]) {
+      return fromRates[toCurrency.toLowerCase()];
+    } else {
+      return null;
+    }
   });
 }
 
 // Cache exchange rate
 function cacheRate(fromCurrency, toCurrency, rate) {
-  return new Promise(resolve => {
-    chrome.storage.local.get(['rates'], function(result) {
-      const rates = result.rates || {};
-      
-      // Initialize currency object if it doesn't exist
-      if (!rates[fromCurrency.toLowerCase()]) {
-        rates[fromCurrency.toLowerCase()] = {};
-      }
-      
-      // Set the rate
-      rates[fromCurrency.toLowerCase()][toCurrency.toLowerCase()] = rate;
-      
-      // Set expiry to 24 hours from now
-      const expiry = Date.now() + (24 * 60 * 60 * 1000);
-      
-      // Save to storage
-      chrome.storage.local.set({
-        rates: rates,
-        ratesExpiry: expiry
-      }, resolve);
+  return browserAPI.storage.local.get(['rates']).then(result => {
+    const rates = result.rates || {};
+    
+    // Initialize currency object if it doesn't exist
+    if (!rates[fromCurrency.toLowerCase()]) {
+      rates[fromCurrency.toLowerCase()] = {};
+    }
+    
+    // Set the rate
+    rates[fromCurrency.toLowerCase()][toCurrency.toLowerCase()] = rate;
+    
+    // Set expiry to 24 hours from now
+    const expiry = Date.now() + (24 * 60 * 60 * 1000);
+    
+    // Save to storage
+    return browserAPI.storage.local.set({
+      rates: rates,
+      ratesExpiry: expiry
     });
   });
 }
@@ -152,7 +148,7 @@ async function prefetchCommonRates(baseCurrency) {
 }
 
 // Listen for changes in target currency to prefetch rates
-chrome.storage.onChanged.addListener((changes, namespace) => {
+browserAPI.storage.onChanged.addListener((changes, namespace) => {
   if (changes.targetCurrency && changes.targetCurrency.newValue) {
     prefetchCommonRates(changes.targetCurrency.newValue);
   }

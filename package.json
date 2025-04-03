@@ -11,7 +11,14 @@
     "test:watch": "mocha --watch test/unit/regex-unit-tests.js",
     "build:dev": "webpack --config webpack.dev.config.js",
     "watch:dev": "webpack --watch --config webpack.dev.config.js",
-    "clean:dev": "rimraf dist-dev"
+    "clean:dev": "rimraf dist-dev",
+    "build:multi": "webpack --config webpack.multi.config.js",
+    "build:chrome": "webpack --config webpack.multi.config.js --env browser=chrome",
+    "build:firefox": "webpack --config webpack.multi.config.js --env browser=firefox",
+    "watch:multi": "webpack --watch --config webpack.multi.config.js",
+    "watch:chrome": "webpack --watch --config webpack.multi.config.js --env browser=chrome",
+    "watch:firefox": "webpack --watch --config webpack.multi.config.js --env browser=firefox",
+    "clean:multi": "rimraf dist-chrome dist-firefox"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +32,7 @@
     "terser-webpack-plugin": "^5.3.14",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
+    "webpack-merge": "^6.0.1",
     "zip-webpack-plugin": "^4.0.3"
   }
 }
