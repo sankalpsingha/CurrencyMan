@@ -777,6 +777,173 @@ The extension uses webpack to build separate distributions for Chrome and Firefo
    - `npm run watch:firefox`: Watch for changes and rebuild for Firefox
    - `npm run watch:multi`: Watch for changes and rebuild for both browsers
 
+## Automated Testing Framework
+
+The extension includes a comprehensive automated testing framework using Playwright and Jest to ensure functionality across browsers.
+
+### Testing Architecture
+
+The automated testing framework consists of the following components:
+
+1. **Test Runners**:
+   - Jest: JavaScript testing framework for running tests
+   - Playwright: Browser automation library for simulating user interactions
+
+2. **Test Structure**:
+   - **End-to-End Tests**: Test the extension's functionality in a real browser environment
+   - **Cross-Browser Tests**: Verify consistent behavior across Chrome and Firefox
+   - **Fixtures**: HTML files with various currency examples for testing
+
+3. **Helper Utilities**:
+   - **Extension Helpers**: Functions for loading the extension in browsers
+   - **Test Utilities**: Functions for simulating user interactions and verifying results
+
+### Key Components
+
+#### 1. Test Fixtures
+
+Test fixtures are HTML files containing various currency examples for testing:
+
+- **currency-examples.html**: Contains examples of different currency formats
+- **domain-specific.html**: Contains examples for testing domain-specific currency detection
+
+#### 2. Extension Helpers
+
+Functions for loading and interacting with the extension:
+
+```javascript
+async function loadExtension(browser, browserName) {
+  const extensionPath = path.join(
+    __dirname, 
+    '../../../', 
+    browserName === 'chromium' ? 'dist-chrome' : 'dist-firefox'
+  );
+  
+  let context;
+  
+  if (browserName === 'chromium') {
+    context = await browser.newContext({
+      viewport: { width: 1280, height: 720 },
+      // Chrome-specific extension loading
+      args: [
+        `--disable-extensions-except=${extensionPath}`,
+        `--load-extension=${extensionPath}`
+      ]
+    });
+  } else if (browserName === 'firefox') {
+    context = await browser.newContext({
+      viewport: { width: 1280, height: 720 },
+      // Firefox-specific extension loading
+      firefox: {
+        extensions: [extensionPath]
+      }
+    });
+  }
+  
+  return context;
+}
+```
+
+#### 3. Test Utilities
+
+Functions for simulating user interactions and verifying results:
+
+```javascript
+async function selectElementText(page, selector) {
+  await page.click(selector, { clickCount: 3 }); // Triple click to select all text
+}
+
+async function waitForConversionPopup(page, timeout = 5000) {
+  return await page.waitForSelector('.currency-conversion-popup', { timeout });
+}
+```
+
+#### 4. Test Specifications
+
+The test suite includes several test specifications:
+
+- **Extension Loading Tests**: Verify the extension loads correctly in both browsers
+- **Content Script Tests**: Verify currency detection and conversion for various formats
+- **Popup UI Tests**: Verify settings can be changed and saved
+- **Domain-Specific Settings Tests**: Verify domain mappings work correctly
+- **Cross-Browser Compatibility Tests**: Verify consistent behavior across browsers
+
+Example test:
+
+```javascript
+test('Should detect and convert USD symbol', async () => {
+  // Select the USD text
+  await selectElementText(page, '#usd-symbol');
+  
+  // Wait for conversion popup to appear
+  const popup = await waitForConversionPopup(page);
+  expect(popup).toBeTruthy();
+  
+  // Verify conversion content
+  const popupText = await popup.textContent();
+  expect(popupText).toMatch(/\$10\.99\s*=\s*[\d.]+ [A-Z]{3}/);
+});
+```
+
+### Technical Challenges and Solutions
+
+#### 1. Extension ID Challenge
+
+**Problem**: To access an extension's popup, we need its ID, which is dynamically generated when the extension is loaded. Playwright cannot directly navigate to `chrome://extensions` to get this ID due to security restrictions.
+
+**Solution**: For testing purposes, we use a hardcoded extension ID and focus on testing the content script functionality, which doesn't require direct access to the extension popup.
+
+#### 2. Cross-Browser Testing
+
+**Problem**: Chrome and Firefox have different ways of loading and interacting with extensions.
+
+**Solution**: We implemented browser-specific code for loading extensions and abstracted away the differences in a helper module.
+
+#### 3. Simulating User Interactions
+
+**Problem**: Testing currency detection requires simulating text selection and verifying the popup appears.
+
+**Solution**: We implemented helper functions to select text and wait for the conversion popup to appear.
+
+### Running the Tests
+
+The tests can be run using the following commands:
+
+```bash
+# Install Playwright browsers (one-time setup)
+npx playwright install
+
+# Build the extension for both browsers
+npm run build:multi
+
+# Run tests in both Chrome and Firefox
+npm run test:e2e
+
+# Run tests in Chrome only
+npm run test:e2e:chrome
+
+# Run tests in Firefox only
+npm run test:e2e:firefox
+```
+
+### Future Testing Improvements
+
+1. **Extension Popup Testing**: Implement a reliable way to test the extension popup UI directly, possibly using a specialized extension testing framework or a headless version of the popup UI.
+
+2. **API Mocking**: Add mocks for the currency API to test offline behavior and error handling.
+
+3. **Visual Regression Testing**: Add visual comparison tests to ensure the UI appears correctly across browsers.
+
+4. **Performance Testing**: Add tests to measure and ensure the extension's performance meets requirements.
+
+5. **Accessibility Testing**: Add tests to verify the extension is accessible to users with disabilities.
+
+6. **Integration with CI/CD**: Set up continuous integration to run tests automatically on code changes.
+
+7. **Test Coverage Reporting**: Add test coverage reporting to identify untested code.
+
+8. **End-to-End User Flows**: Add tests for complete user flows, from installation to daily usage.
+
 ## Future Enhancements
 
 1. **Offline Mode**: Add support for working without an internet connection
@@ -786,3 +953,6 @@ The extension uses webpack to build separate distributions for Chrome and Firefo
 5. **Multiple Currencies**: Convert to multiple target currencies at once
 6. **Enhanced Domain Mappings**: Support for pattern matching in domain mappings (e.g., *.amazon.*)
 7. **Additional Browser Support**: Add support for Safari and other browsers
+8. **Improved Testing**: Implement the testing improvements outlined above
+9. **Accessibility Improvements**: Ensure the extension is fully accessible
+10. **Performance Optimizations**: Further optimize the extension for speed and efficiency

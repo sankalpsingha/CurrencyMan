@@ -1,6 +1,6 @@
 # Testing CurrencyMan Extension
 
-This document explains how to test the CurrencyMan Chrome extension during development with unminified code.
+This document explains how to test the CurrencyMan browser extension during development with unminified code and how to run automated tests.
 
 ## Development Build
 
@@ -38,13 +38,22 @@ To load the development version of the extension in Chrome:
 3. Click "Load unpacked" and select the `dist-dev` directory
 4. The extension should now be installed and active
 
+## Loading the Extension in Firefox
+
+To load the development version of the extension in Firefox:
+
+1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+2. Click "Load Temporary Add-on..."
+3. Navigate to the `dist-dev` directory and select the `manifest.json` file
+4. The extension will be installed temporarily (until Firefox is closed)
+
 ## Reloading After Changes
 
 When you make changes to the extension code:
 
 1. If you're using watch mode (`npm run watch:dev`), the code will be automatically rebuilt
-2. Go to `chrome://extensions/` in Chrome
-3. Click the refresh icon on the CurrencyMan extension card
+2. For Chrome: Go to `chrome://extensions/` and click the refresh icon on the CurrencyMan extension card
+3. For Firefox: Go to `about:debugging#/runtime/this-firefox` and click the "Reload" button next to the extension
 4. If you've made changes to the content script, you'll need to refresh any open tabs where you want to test the extension
 
 ## Debugging
@@ -52,7 +61,7 @@ When you make changes to the extension code:
 With the development build:
 
 1. You can use `console.log()` statements in your code for debugging
-2. Chrome DevTools will show the unminified source code
+2. Browser DevTools will show the unminified source code
 3. Source maps allow you to set breakpoints and debug directly in the original source files
 
 ### Debugging the Content Script
@@ -62,7 +71,7 @@ To debug the content script:
 1. Open a webpage where the extension is active
 2. Right-click and select "Inspect" to open DevTools
 3. Go to the "Sources" tab
-4. Look for the "Content scripts" section in the file tree
+4. Look for the "Content scripts" section in the file tree (Chrome) or "Moz-extension" (Firefox)
 5. Find and open your content script file
 6. You can now set breakpoints and debug
 
@@ -70,22 +79,68 @@ To debug the content script:
 
 To debug the background script:
 
-1. Go to `chrome://extensions/`
-2. Find the CurrencyMan extension
-3. Click on "background page" under "Inspect views"
-4. This will open DevTools connected to the background script
-5. You can now set breakpoints and debug
+1. In Chrome: Go to `chrome://extensions/`, find the CurrencyMan extension, and click on "background page" under "Inspect views"
+2. In Firefox: Go to `about:debugging#/runtime/this-firefox`, find the CurrencyMan extension, and click "Inspect" next to "Background page"
+3. This will open DevTools connected to the background script
+4. You can now set breakpoints and debug
 
 ### Debugging the Popup
 
 To debug the popup:
 
-1. Click on the CurrencyMan icon in the Chrome toolbar to open the popup
+1. Click on the CurrencyMan icon in the browser toolbar to open the popup
 2. Right-click inside the popup and select "Inspect"
 3. This will open DevTools connected to the popup
 4. You can now set breakpoints and debug
 
-## Testing Domain-Specific Currency Settings
+## Automated Testing
+
+The extension includes automated tests to verify functionality across browsers.
+
+### Unit Tests
+
+To run the unit tests for the regex patterns:
+
+```bash
+npm test
+```
+
+### End-to-End Tests
+
+To run the end-to-end tests using Playwright and Jest:
+
+```bash
+# Build the extension for both browsers first
+npm run build:multi
+
+# Run tests in both Chrome and Firefox
+npm run test:e2e
+
+# Run tests in Chrome only
+npm run test:e2e:chrome
+
+# Run tests in Firefox only
+npm run test:e2e:firefox
+```
+
+The end-to-end tests verify:
+- Extension loading in both browsers
+- Content script functionality (currency detection and conversion)
+- Popup UI functionality
+- Domain-specific settings
+- Cross-browser compatibility
+
+### Adding New Tests
+
+To add new end-to-end tests:
+
+1. Create a new test specification file in the `test/e2e/specs` directory
+2. Add test fixtures if needed in the `test/e2e/fixtures` directory
+3. Add helper functions if needed in the `test/e2e/helpers` directory
+
+## Manual Testing
+
+### Testing Domain-Specific Currency Settings
 
 To test the domain-specific currency settings feature:
 
@@ -125,3 +180,11 @@ npm run clean:dev
 ```
 
 This will remove the `dist-dev` directory and all its contents.
+
+To clean the multi-browser build directories:
+
+```bash
+npm run clean:multi
+```
+
+This will remove the `dist-chrome` and `dist-firefox` directories and all their contents.

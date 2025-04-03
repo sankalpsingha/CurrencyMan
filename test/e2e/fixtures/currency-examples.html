@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CurrencyMan Test Page - Currency Examples</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+      }
+      .currency-example {
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid #eee;
+      }
+      .description {
+        color: #666;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CurrencyMan Test Page</h1>
+    <p>
+      This page contains various currency formats for testing the CurrencyMan
+      extension.
+    </p>
+
+    <div class="currency-example">
+      <p><span id="usd-symbol">$10.99</span></p>
+      <p class="description">USD symbol before number</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="eur-symbol">€15.50</span></p>
+      <p class="description">EUR symbol before number</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="gbp-symbol">£20</span></p>
+      <p class="description">GBP symbol before number without decimal</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="jpy-symbol">¥1,000</span></p>
+      <p class="description">
+        JPY symbol before number with thousands separator
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="usd-after">10.99$</span></p>
+      <p class="description">USD symbol after number</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="eur-code">EUR 25.75</span></p>
+      <p class="description">EUR code before number</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="gbp-code">30 GBP</span></p>
+      <p class="description">GBP code after number</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="negative">-$5.99</span></p>
+      <p class="description">Negative value with symbol</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="parentheses">($7.50)</span></p>
+      <p class="description">Negative value with parentheses</p>
+    </div>
+
+    <div class="currency-example">
+      <p><span id="btc-symbol">₿0.00123</span></p>
+      <p class="description">Bitcoin symbol</p>
+    </div>
+  </body>
+</html>

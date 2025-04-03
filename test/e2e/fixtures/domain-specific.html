@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CurrencyMan Test Page - Domain-Specific Settings</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+      }
+      .currency-example {
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid #eee;
+      }
+      .description {
+        color: #666;
+        font-size: 0.9em;
+      }
+      .domain {
+        font-weight: bold;
+        color: #0066cc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CurrencyMan Domain-Specific Settings Test</h1>
+    <p>
+      This page simulates different domains for testing domain-specific currency
+      settings.
+    </p>
+
+    <div class="currency-example">
+      <p class="domain">amazon.ca</p>
+      <p><span id="cad-symbol">$24.99</span></p>
+      <p class="description">
+        $ symbol on amazon.ca should be interpreted as CAD
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p class="domain">amazon.co.uk</p>
+      <p><span id="gbp-symbol">£19.99</span></p>
+      <p class="description">
+        £ symbol on amazon.co.uk should be interpreted as GBP
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p class="domain">amazon.de</p>
+      <p><span id="eur-symbol">19,99 €</span></p>
+      <p class="description">
+        € symbol on amazon.de should be interpreted as EUR
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p class="domain">amazon.jp</p>
+      <p><span id="jpy-symbol">¥2,500</span></p>
+      <p class="description">
+        ¥ symbol on amazon.jp should be interpreted as JPY
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p class="domain">amazon.in</p>
+      <p><span id="inr-symbol">₹1,499</span></p>
+      <p class="description">
+        ₹ symbol on amazon.in should be interpreted as INR
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p class="domain">amazon.com.au</p>
+      <p><span id="aud-symbol">$29.99</span></p>
+      <p class="description">
+        $ symbol on amazon.com.au should be interpreted as AUD
+      </p>
+    </div>
+
+    <div class="currency-example">
+      <p class="domain">amazon.com.br</p>
+      <p><span id="brl-symbol">R$99,90</span></p>
+      <p class="description">
+        R$ symbol on amazon.com.br should be interpreted as BRL
+      </p>
+    </div>
+
+    <script>
+      // This script is just for testing purposes
+      // It adds a data attribute to each currency span with the expected currency code
+      document
+        .getElementById("cad-symbol")
+        .setAttribute("data-expected-currency", "CAD");
+      document
+        .getElementById("gbp-symbol")
+        .setAttribute("data-expected-currency", "GBP");
+      document
+        .getElementById("eur-symbol")
+        .setAttribute("data-expected-currency", "EUR");
+      document
+        .getElementById("jpy-symbol")
+        .setAttribute("data-expected-currency", "JPY");
+      document
+        .getElementById("inr-symbol")
+        .setAttribute("data-expected-currency", "INR");
+      document
+        .getElementById("aud-symbol")
+        .setAttribute("data-expected-currency", "AUD");
+      document
+        .getElementById("brl-symbol")
+        .setAttribute("data-expected-currency", "BRL");
+    </script>
+  </body>
+</html>
