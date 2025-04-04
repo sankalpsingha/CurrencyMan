@@ -107,6 +107,41 @@ These tests verify that the extension can correctly identify and parse various c
 - Various decimal formats
 - Edge cases and potential false positives
 
+#### End-to-End Tests
+
+The project includes end-to-end tests using Playwright and Jest:
+
+```
+# Run all E2E tests (headless mode)
+npm run test:e2e
+
+# Run Chrome-only E2E tests (headless mode)
+npm run test:e2e:chrome
+
+# Run Firefox-only E2E tests (headless mode)
+npm run test:e2e:firefox
+
+# Run tests with visible browsers (non-headless mode)
+npm run test:e2e:visible
+
+# Run Chrome-only tests with visible browser
+npm run test:e2e:chrome:visible
+
+# Run Firefox-only tests with visible browser
+npm run test:e2e:firefox:visible
+```
+
+Headless mode runs browsers in the background without a visible UI, which is faster and better suited for automated testing. Non-headless mode shows the browser UI during test execution, which is useful for debugging and visualizing test behavior.
+
+#### Pre-commit Hooks
+
+The project uses Husky to run tests automatically before each commit:
+
+1. Unit tests are run to verify regex patterns
+2. Chrome E2E tests are run to verify extension functionality
+
+This ensures that code changes don't break existing functionality before they're committed.
+
 #### Manual Testing
 
 Manual test pages are included to verify the extension's functionality in a browser:

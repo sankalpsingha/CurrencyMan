@@ -1,14 +1,16 @@
 const { chromium, firefox } = require('playwright');
 const path = require('path');
 const { selectElementText, waitForConversionPopup } = require('../helpers/test-utils');
+const { getBrowserLaunchOptions } = require('../helpers/browser-config');
 
 describe('Cross-Browser Compatibility', () => {
   let browsers = [];
   
   beforeAll(async () => {
-    // Launch both Chrome and Firefox
-    const chromeBrowser = await chromium.launch({ headless: false });
-    const firefoxBrowser = await firefox.launch({ headless: false });
+    // Launch both Chrome and Firefox with the same options
+    const launchOptions = getBrowserLaunchOptions();
+    const chromeBrowser = await chromium.launch(launchOptions);
+    const firefoxBrowser = await firefox.launch(launchOptions);
     
     browsers.push(chromeBrowser, firefoxBrowser);
   }, 60000); // Increase timeout for loading browsers

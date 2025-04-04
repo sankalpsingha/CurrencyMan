@@ -1,16 +1,17 @@
 const { chromium, firefox } = require('playwright');
 const path = require('path');
 const { selectElementText, waitForConversionPopup } = require('../helpers/test-utils');
+const { getBrowserLaunchOptions } = require('../helpers/browser-config');
 
 describe('Domain-Specific Currency Settings', () => {
   let browser;
   const browserName = process.env.BROWSER || 'chromium';
   
   beforeAll(async () => {
-    // Launch the browser based on the environment variable
-    browser = await (browserName === 'chromium' ? chromium : firefox).launch({
-      headless: false
-    });
+    // Launch the browser based on the environment variable and config
+    browser = await (browserName === 'chromium' ? chromium : firefox).launch(
+      getBrowserLaunchOptions()
+    );
   }, 30000); // Increase timeout for browser loading
   
   afterAll(async () => {

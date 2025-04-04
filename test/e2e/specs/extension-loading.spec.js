@@ -1,15 +1,16 @@
 const { chromium, firefox } = require('playwright');
 const { loadExtension, getExtensionId } = require('../helpers/extension-helpers');
+const { getBrowserLaunchOptions } = require('../helpers/browser-config');
 
 describe('Extension Loading', () => {
   let browser, context, extensionId;
   const browserName = process.env.BROWSER || 'chromium';
   
   beforeAll(async () => {
-    // Launch the browser based on the environment variable
-    browser = await (browserName === 'chromium' ? chromium : firefox).launch({
-      headless: false
-    });
+    // Launch the browser based on the environment variable and config
+    browser = await (browserName === 'chromium' ? chromium : firefox).launch(
+      getBrowserLaunchOptions()
+    );
     
     // Load the extension
     context = await loadExtension(browser, browserName);

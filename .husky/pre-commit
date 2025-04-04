@@ -1,0 +1,8 @@
+# Run unit tests
+echo "Running unit tests..."
+npm test
+
+# Run Chrome-only e2e tests in headless mode
+# This is a faster subset of the full test suite
+echo "Running Chrome e2e tests in headless mode..."
+npm run test:e2e:chrome

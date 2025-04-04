@@ -916,15 +916,26 @@ npx playwright install
 # Build the extension for both browsers
 npm run build:multi
 
-# Run tests in both Chrome and Firefox
+# Run tests in both Chrome and Firefox (headless mode)
 npm run test:e2e
 
-# Run tests in Chrome only
+# Run tests in Chrome only (headless mode)
 npm run test:e2e:chrome
 
-# Run tests in Firefox only
+# Run tests in Firefox only (headless mode)
 npm run test:e2e:firefox
+
+# Run tests with visible browsers (non-headless mode)
+npm run test:e2e:visible
+
+# Run tests in Chrome only with visible browser
+npm run test:e2e:chrome:visible
+
+# Run tests in Firefox only with visible browser
+npm run test:e2e:firefox:visible
 ```
+
+Headless mode runs browsers in the background without a visible UI, which is faster and better suited for automated testing environments like CI/CD pipelines or pre-commit hooks. Non-headless mode shows the browser UI during test execution, which is useful for debugging and visualizing test behavior.
 
 ### Future Testing Improvements
 
@@ -943,6 +954,47 @@ npm run test:e2e:firefox
 7. **Test Coverage Reporting**: Add test coverage reporting to identify untested code.
 
 8. **End-to-End User Flows**: Add tests for complete user flows, from installation to daily usage.
+
+## Git Hooks with Husky
+
+The project uses Husky to run pre-commit hooks that ensure code quality before commits are made. This helps prevent broken code from being committed to the repository.
+
+### Pre-commit Hook
+
+The pre-commit hook runs the following checks:
+
+1. **Unit Tests**: Runs all unit tests to ensure the regex patterns work correctly
+2. **E2E Tests (Chrome)**: Runs the end-to-end tests in Chrome to verify extension functionality
+
+### How It Works
+
+When you attempt to commit changes, the pre-commit hook will:
+
+1. Run the unit tests with `npm test`
+2. Build the Chrome extension with `npm run build:chrome`
+3. Run the Chrome E2E tests with `npm run test:e2e:chrome`
+
+If any of these steps fail, the commit will be aborted, allowing you to fix the issues before committing.
+
+### Skipping Hooks
+
+In rare cases where you need to bypass the pre-commit hooks (not recommended for normal development), you can use:
+
+```bash
+git commit --no-verify -m "Your commit message"
+```
+
+### Setting Up Husky
+
+Husky is automatically installed when you run `npm install` due to the prepare script in package.json. If you need to manually set up Husky:
+
+```bash
+# Install Husky
+npm install --save-dev husky
+
+# Initialize Husky
+npx husky init
+```
 
 ## Future Enhancements
 
