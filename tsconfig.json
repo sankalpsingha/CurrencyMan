@@ -7,8 +7,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "types": ["jest", "node", "playwright"]
+    "types": ["jest", "node", "playwright"],
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
   },
-  "include": ["test/e2e/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["test/e2e/**/*", "test/e2e/**/*.ts", "test/e2e/**/*.js", "test/e2e/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "dist-chrome", "dist-firefox", "dist-dev"]
 }
