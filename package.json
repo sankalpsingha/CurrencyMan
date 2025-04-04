@@ -24,7 +24,7 @@
     "clean:multi": "rimraf dist-chrome dist-firefox"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sankalp Singha",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.51.1",

@@ -185,6 +185,16 @@ function prefetchRates(baseCurrency) {
   browserAPI.runtime.sendMessage({
     action: 'prefetchRates',
     currency: baseCurrency
+  })
+  .then(response => {
+    if (response && response.success) {
+      console.log('Successfully prefetched rates');
+    } else if (response && response.error) {
+      console.error('Error prefetching rates:', response.error);
+    }
+  })
+  .catch(error => {
+    console.error('Error sending prefetchRates message:', error);
   });
 }
 

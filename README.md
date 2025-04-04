@@ -45,7 +45,7 @@ The extension is currently under review in the Chrome Web Store and Firefox Add-
 
 ### Manual Installation in Chrome
 
-1. Download the latest release from the [Releases](https://github.com/yourusername/currencyman/releases) page
+1. Download the latest release from the [Releases](https://github.com/sankalpsingha/currencyman/releases) page
 2. Unzip the downloaded file to a location on your computer
 3. Open Chrome and navigate to `chrome://extensions/`
 4. Enable "Developer mode" by toggling the switch in the top right corner

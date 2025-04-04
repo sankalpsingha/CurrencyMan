@@ -29,7 +29,7 @@ browserAPI.runtime.onInstalled.addListener(() => {
   console.log('CurrencyMan extension installed');
 });
 
-// Handle messages from content script
+// Handle messages from content script and popup
 browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'convertCurrency') {
     const { fromCurrency, toCurrency, amount } = request;
@@ -71,7 +71,26 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     // Return true to indicate we'll respond asynchronously
     return true;
+  } else if (request.action === 'prefetchRates') {
+    // Handle prefetchRates action from popup
+    const { currency } = request;
+    
+    // Call the prefetchCommonRates function
+    prefetchCommonRates(currency)
+      .then(() => {
+        sendResponse({ success: true });
+      })
+      .catch(error => {
+        console.error('Error prefetching rates:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    
+    // Return true to indicate we'll respond asynchronously
+    return true;
   }
+  
+  // Return a resolved promise for any unhandled messages to prevent the error
+  return Promise.resolve();
 });
 
 // Get cached exchange rate
