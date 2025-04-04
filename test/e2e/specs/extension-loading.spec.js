@@ -21,12 +21,6 @@ describe('Extension Loading', () => {
     await browser.close();
   });
   
-  test('Extension should load correctly', async () => {
-    // Skip this test for now since we're using a hardcoded extension ID
-    // In a real-world scenario, you would need to get the actual extension ID
-    console.log('Skipping extension popup test due to hardcoded extension ID');
-  });
-  
   test('Extension should have correct permissions', async () => {
     // This is a basic test to verify the extension loads without permission errors
     // More detailed permission tests would depend on the specific browser APIs

@@ -1,6 +1,5 @@
 const { chromium, firefox } = require('playwright');
 const path = require('path');
-const { loadExtension, getExtensionId } = require('../helpers/extension-helpers');
 const { selectElementText, waitForConversionPopup } = require('../helpers/test-utils');
 
 describe('Domain-Specific Currency Settings', () => {
@@ -18,11 +17,6 @@ describe('Domain-Specific Currency Settings', () => {
     if (browser) {
       await browser.close();
     }
-  });
-  
-  test('Should be able to add domain-specific currency mapping', async () => {
-    // Skip this test since we're not loading the extension
-    console.log('Skipping domain mapping test - requires extension popup');
   });
   
   test('Should apply domain-specific currency mapping when detecting currencies', async () => {
@@ -61,15 +55,5 @@ describe('Domain-Specific Currency Settings', () => {
     
     // Close the test page
     await page.close();
-  });
-  
-  test('Should be able to remove domain-specific currency mapping', async () => {
-    // Skip this test since we're not loading the extension
-    console.log('Skipping domain mapping removal test - requires extension popup');
-  });
-  
-  test('Should handle the "Use Current" button correctly', async () => {
-    // Skip this test since we're not loading the extension
-    console.log('Skipping "Use Current" button test - requires extension popup');
   });
 });

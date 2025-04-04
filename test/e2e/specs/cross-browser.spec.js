@@ -1,6 +1,5 @@
 const { chromium, firefox } = require('playwright');
 const path = require('path');
-const { loadExtension, getExtensionId } = require('../helpers/extension-helpers');
 const { selectElementText, waitForConversionPopup } = require('../helpers/test-utils');
 
 describe('Cross-Browser Compatibility', () => {
@@ -19,11 +18,6 @@ describe('Cross-Browser Compatibility', () => {
     for (const browser of browsers) {
       await browser.close();
     }
-  });
-  
-  test('Extension popup should have consistent UI across browsers', async () => {
-    // Skip this test since we're not loading the extension
-    console.log('Skipping extension popup UI test - requires extension popup');
   });
   
   test('Currency detection should work consistently across browsers', async () => {
@@ -61,10 +55,5 @@ describe('Cross-Browser Compatibility', () => {
     
     await chromePage.close();
     await firefoxPage.close();
-  });
-  
-  test('Settings should persist across browser restarts', async () => {
-    // Skip this test since we're not loading the extension
-    console.log('Skipping settings persistence test - requires extension popup');
   });
 });
