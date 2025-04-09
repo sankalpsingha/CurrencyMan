@@ -4,7 +4,7 @@
 
 CurrencyMan is a browser extension for Chrome and Firefox that allows you to convert currency values on webpages to your preferred local currency. Simply select any text containing a currency value, and a popup will show the converted amount.
 
-> **Note:** This extension is currently under review in the Chrome Web Store and Firefox Add-ons. You can install it manually following the instructions below.
+[![CurrencyMan Intro Video](https://img.youtube.com/vi/c8HS6t1bosw/0.jpg)](https://youtu.be/c8HS6t1bosw)
 
 ## Features
 
@@ -39,9 +39,12 @@ Each directory contains a README.md file with more information.
 
 ## Installation
 
-### From Browser Stores (Coming Soon)
+### From Browser Stores
 
-The extension is currently under review in the Chrome Web Store and Firefox Add-ons. Once approved, you'll be able to install it directly from there.
+Install the extension directly from your browser's store:
+
+- **Chrome Web Store:** [Install CurrencyMan for Chrome](https://chromewebstore.google.com/detail/ofpmjlpibnfenfoiofbgecdjpdkiipmf?utm_source=item-share-cb)
+- **Firefox Add-ons:** [Install CurrencyMan for Firefox](https://addons.mozilla.org/en-US/firefox/addon/currencyman/)
 
 ### Manual Installation in Chrome
 
